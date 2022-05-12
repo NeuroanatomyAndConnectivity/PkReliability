@@ -207,6 +207,8 @@ def save_grads(pcaMap,deMap,idxMap,session,hemi=''):
         rde=np.zeros(idxMap[0]['rnverts'])
         rde[idxMap[0]['rIDX']]=deMap
         save_gifti(rde,f'{odir}/{subj}.R.DE.G1.{kernel}mmTsSes{session}')
+
+        print('debugging stops here #############')
         return rpc,rde
     else: 
         lpcaMap=pcaMap[lcort]
@@ -231,6 +233,24 @@ def save_grads(pcaMap,deMap,idxMap,session,hemi=''):
         
         save_gifti(rde,f'{odir}/{subj}.R.DE.G1.{kernel}mmTsSes{session}')
         return lpc,lde,rpc,rde
+
+def load_grads(dir,hemi):
+	if hemi == 'left':
+		PC1=f'{odir}/{subj}.L.PCA.G1.{kernel}mmTsSes01.func.gii'
+		PC2=f'{odir}/{subj}.L.PCA.G1.{kernel}mmTsSes01.func.gii'
+
+		DE1=f'{odir}/{subj}.L.DE.G1.{kernel}mmTsSes01.func.gii'
+		DE2=f'{odir}/{subj}.L.DE.G1.{kernel}mmTsSes01.func.gii'
+		return PC1,PC2,DE1,DE2
+	elif hemi =='right':
+		print('running right hemi')
+		PC1=f'{odir}/{subj}.R.PCA.G1.{kernel}mmTsSes01.func.gii'
+		PC2=f'{odir}/{subj}.R.PCA.G1.{kernel}mmTsSes01.func.gii'
+
+		DE1=f'{odir}/{subj}.R.DE.G1.{kernel}mmTsSes01.func.gii'
+		DE2=f'{odir}/{subj}.R.DE.G1.{kernel}mmTsSes01.func.gii'
+		return PC1,PC2,DE1,DE2
+
 
 
 def gradientOrientation(grad,hemi):
@@ -295,20 +315,27 @@ def dist_btw_pks(set1,set2,surf):
 		print(gd.compute_gdist(verts,faces,i,j))
 
 
-######## do the thing 
+################################################################################################
+################################################################################################
+################################################################################################
+######################### Start the peak reliability detection bit #############################
+################################################################################################
+################################################################################################
+################################################################################################
 func_ses411=[]
 for data in range(len(func_ses)):
 	#### start by getting the indices of cortical vertices
 	func_ses411.append(get_corticalVertices(func_ses[data]))
 	##### smooth and clean the funcitonal time series
-
+kernel=5.0 #### smoothed time series kernel
 if pks==False:
-	kernel=5.0 #### comment in full list when done 
-	func_ses411=[]
+	 
 	for data in range(len(func_ses)):
 		##### smooth and clean the funcitonal time series
 		func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
 	#### concat the time series
+
+
 	ses1,ses2=concat_sessions(func_ses)
 
 	### clear memory
@@ -339,9 +366,9 @@ if pks==False:
 		dmG1=DiffEmbed(dconn)
 
 
-		pc32,de32=save_grads(pcaG1,dmG1,func_ses411,f'0{x}','left')
+		pc32,de32=save_grads(pcaG1,dmG1,func_ses411,f'0{x}',hemi)
 
-		### clear memory 
+		## clear memory 
 		del dconn 
 
 	#### now we do the peak distances across sessions
@@ -349,7 +376,26 @@ if pks==False:
 
 
 else:
-	print('we have grads already. hell yeah ')
+
+	print('Raw Gradients Exist')
+	if hemi != 'left' and  hemi !='right':
+		print('doing on both hemispheres')
+	else:
+		
+		pc1,pc2,de1,de2=load_grads(subj,hemi)
+
+		pc=[pc1,pc2]
+		de=[de1,de2]	
+
+		for comp in pc:
+			gradientOrientation(comp,hemi)
+
+	### first step get in the raw files and check orientation 
+	### if both files don't correspond to gradient 1 then stop processing and flag subject. 
+	### flag each heimsphere separately though just in case. 
+
+
+
 
 
 
