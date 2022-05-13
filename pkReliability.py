@@ -14,7 +14,7 @@ import gdist as gd
 from brainspace.gradient import GradientMaps
 from sklearn.metrics import pairwise_distances
 from surfdist.utils import find_node_match
-
+np.set_printoptions(suppress=True)
 
 parser = argparse.ArgumentParser(description='Embeds functional Connectivity Matrix using PCA and diffusion map embedding, and then determines how far peaks are across sessions of the same subject',\
 	usage='pkReliability.py --subj <HCP subject> --odir <output directory> ',\
@@ -325,13 +325,23 @@ def get_peaks(grad,zoneParc):
 		pks.append(i[np.argmax(grad[i])])
 	return pks
 
-def lookupHires(surf1,surf2):
-	surf1=nib.load(surf1).darrays[0].data
-	surf2=nib.load(surf2).darrays[0].data
+def lookupHires(hemi):
 
-	srf_mathced=find_node_match(surf1,surf2)[0]
+	if hemi =='left':
+		surf1=nib.load(Lsrf32).darrays[0].data
+		surf2=nib.load(LsrfNative).darrays[0].data
+
+		srf_mathced=find_node_match(surf1,surf2)[0]
 	
-	return srf_mathced
+		return srf_mathced
+	elif hemi =='right':
+		surf1=nib.load(Rsrf32).darrays[0].data
+		surf2=nib.load(RsrfNative).darrays[0].data
+
+		srf_mathced=find_node_match(surf1,surf2)[0]
+	
+		return srf_mathced
+
 
 def dist_btw_pks(set1,set2,surf):
 	verts=nib.load(surf).darrays[0].data.astype('float64')
@@ -344,10 +354,8 @@ def dist_btw_pks(set1,set2,surf):
 		dist_out.append(gd.compute_gdist(verts,faces,i,j))
 	return np.asarray(dist_out).squeeze()
 
-def getXsessionPkDist(ses_grads,hemi):
+def getXsessionPkDist(ses_grads,hemi,Nat_32):
 	if hemi == 'left':
-		Nat_32=lookupHires(Lsrf32,LsrfNative)	
-
 		#### insert function for smoothing here? 
 
 		ws=LWS
@@ -360,10 +368,9 @@ def getXsessionPkDist(ses_grads,hemi):
 
 		print(pkset1,pkset1Nat)
 		print(pkset2,pkset2Nat)
-		return dist_btw_pks(pkset1Nat,pkset2Nat,LsrfNative)
+		return np.asarray([pkset1,pkset2,pkset1Nat,pkset2Nat,dist_btw_pks(pkset1Nat,pkset2Nat,LsrfNative)])
 
 	elif hemi =='right':
-		Nat_32=lookupHires(Rsrf32,RsrfNative)	
 
 		#### insert function for smoothing here?
 
@@ -377,7 +384,8 @@ def getXsessionPkDist(ses_grads,hemi):
 		print(pkset1,pkset1Nat)
 		print(pkset2,pkset2Nat)
 
-		return dist_btw_pks(pkset1Nat,pkset2Nat,RsrfNative)
+		# return np.asarray([pkset1,pkset2,pkset1Nat,pkset2Nat,dist_btw_pks(pkset1Nat,pkset2Nat,RsrfNative)])
+		return np.asarray(dist_btw_pks(pkset1Nat,pkset2Nat,RsrfNative))
 
 
 
@@ -448,35 +456,62 @@ else:
 		print('doing on both hemispheres')
 
 		for hemi in ['left','right']:
+		### first step get in the raw files and check orientation 
 			pc1,pc2,de1,de2=load_grads(subj,hemi)
 
+			print(pc1,pc2,de1,de2)
 			pc=[pc1,pc2]
 			de=[de1,de2]	
 
 			pca_valid=[]
+			pca_flip=[]
 			for comp in range(len(pc)):
 				print(pc[comp])
 				pc[comp],val=gradientOrientation(pc[comp],hemi)
 				pca_valid.append(val)
 			de_valid=[]
+			de_flip=[]
 			for comp in range(len(de)):
 				print(de[comp])
 				de[comp],val=gradientOrientation(de[comp],hemi)
 				de_valid.append(val)
- 
+
+			#### write for. diffusion embedding as that one works, then add in for PCA 
+		
 		
 			if False in pca_valid:
 				print(' PCA has found at least one session\'s principal gradient separates sensory modalities. \n \
-				Non-canonical orientation, Peak detection will not be run.')
+				Non-canonical orientation, Peak detection will not be run.\n')
 			else: 
-				print(getXsessionPkDist(pc,hemi))
+				ses1Set=smooth_grad(de1,hemi)
+				ses2Set=smooth_grad(de2,hemi)
+
+				Nat32=lookupHires(hemi)
+
+				out=[]
+				for i,j in zip(ses1Set,ses2Set):
+					base=i.split('.func.gii')[0]
+					subset=[gradientOrientation(i,hemi)[0],gradientOrientation(j,hemi)[0]]
+					out.append(getXsessionPkDist(subset,hemi,Nat32))
+				np.save(f'{odir}/{subj}.{hemi}.DE.peaks+dists',np.asarray(out))
 
 
-			if False in de_valid:
-				print(' Diffusion Mapping has found at least one session\'s principal gradient separates sensory modalities. \n \
-				Non-canonical orientation, Peak detection will not be run.')
-			else: 
-				print(getXsessionPkDist(de,hemi))			
+		if False in de_valid:
+			print(' Diffusion Mapping has found at least one session\'s principal gradient separates sensory modalities. \n \
+			Non-canonical orientation, Peak detection will not be run.\n')
+		else: 
+			ses1Set=smooth_grad(de1,hemi)
+			ses2Set=smooth_grad(de2,hemi)
+
+			Nat32=lookupHires(hemi)
+
+			out=[]
+			for i,j in zip(ses1Set,ses2Set):
+				base=i.split('.func.gii')[0]
+				subset=[gradientOrientation(i,hemi)[0],gradientOrientation(j,hemi)[0]]
+				out.append(getXsessionPkDist(subset,hemi,Nat32))
+			np.save(f'{odir}/{subj}.{hemi}.DE.peaks+dists',np.asarray(out))
+
 
 
 
@@ -503,25 +538,39 @@ else:
 
 			#### write for. diffusion embedding as that one works, then add in for PCA 
 		
+		
 		if False in pca_valid:
 			print(' PCA has found at least one session\'s principal gradient separates sensory modalities. \n \
 			Non-canonical orientation, Peak detection will not be run.\n')
 		else: 
-			##### smoothe before here then pass a list of "pc"
-			print(getXsessionPkDist(pc,hemi))
+			ses1Set=smooth_grad(de1,hemi)
+			ses2Set=smooth_grad(de2,hemi)
+
+			Nat32=lookupHires(hemi)
+
+			out=[]
+			for i,j in zip(ses1Set,ses2Set):
+				base=i.split('.func.gii')[0]
+				subset=[gradientOrientation(i,hemi)[0],gradientOrientation(j,hemi)[0]]
+				out.append(getXsessionPkDist(subset,hemi,Nat32))
+			np.save(f'{odir}/{subj}.{hemi}.DE.peaks+dists',np.asarray(out))
 
 
 		if False in de_valid:
 			print(' Diffusion Mapping has found at least one session\'s principal gradient separates sensory modalities. \n \
 			Non-canonical orientation, Peak detection will not be run.\n')
 		else: 
-			print(getXsessionPkDist(de,hemi))
 			ses1Set=smooth_grad(de1,hemi)
 			ses2Set=smooth_grad(de2,hemi)
 
+			Nat32=lookupHires(hemi)
+
+			out=[]
 			for i,j in zip(ses1Set,ses2Set):
-				print(i,j)
-				subset=[nib.load(i).agg_data(),nib.load(j).agg_data()]
-				print(getXsessionPkDist(subset,hemi))
+				base=i.split('.func.gii')[0]
+				subset=[gradientOrientation(i,hemi)[0],gradientOrientation(j,hemi)[0]]
+				out.append(getXsessionPkDist(subset,hemi,Nat32))
+			np.save(f'{odir}/{subj}.{hemi}.DE.peaks+dists',np.asarray(out))
+
 
 
