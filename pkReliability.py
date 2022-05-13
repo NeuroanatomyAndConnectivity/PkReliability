@@ -15,6 +15,7 @@ from brainspace.gradient import GradientMaps
 from sklearn.metrics import pairwise_distances
 from surfdist.utils import find_node_match
 
+
 parser = argparse.ArgumentParser(description='Embeds functional Connectivity Matrix using PCA and diffusion map embedding, and then determines how far peaks are across sessions of the same subject',\
 	usage='pkReliability.py --subj <HCP subject> --odir <output directory> ',\
 	epilog=("Example usage: "+"pkReliability.py --subj 100206 --odir /well/margulies/projects/pks"),add_help=True)
@@ -303,24 +304,60 @@ def get_peaks(grad,zoneParc):
 		pks.append(i[np.argmax(grad[i])])
 	return pks
 
-def find_nat_pk(pks,surf1,surf2):
+def lookupHires(surf1,surf2):
 	surf1=nib.load(surf1).darrays[0].data
 	surf2=nib.load(surf2).darrays[0].data
 
-	srf_mathced=find_node_match(surf1,surf2)
+	srf_mathced=find_node_match(surf1,surf2)[0]
 	
-	natVrt=[]
-	for i in pks:
-		natVrt.append(srf_mathced[i])
-	return np.asarray(natVrt)
+	return srf_mathced
 
 def dist_btw_pks(set1,set2,surf):
 	verts=nib.load(surf).darrays[0].data.astype('float64')
 	faces=nib.load(surf).darrays[1].data.astype('int32')
+	dist_out=[]
 	for i,j in zip(set1,set2):
 		i=np.asarray([i]).astype('int32')
 		j=np.asarray([j]).astype('int32')
-		print(gd.compute_gdist(verts,faces,i,j))
+		print(i,j)
+		dist_out.append(gd.compute_gdist(verts,faces,i,j))
+	return np.asarray(dist_out).squeeze()
+
+def getXsessionPkDist(ses_grads,hemi):
+	if hemi == 'left':
+		Nat_32=lookupHires(Lsrf32,LsrfNative)	
+
+		#### insert function for smoothing here? 
+
+		ws=LWS
+		### get peaks 32K space 
+		pkset1=get_peaks(ses_grads[0],ws)
+		pkset2=get_peaks(ses_grads[1],ws)
+
+		pkset1Nat=[Nat_32[z] for z in pkset1]
+		pkset2Nat=[Nat_32[z] for z in pkset2]
+
+		print(pkset1,pkset1Nat)
+		print(pkset2,pkset2Nat)
+		return dist_btw_pks(pkset1Nat,pkset2Nat,LsrfNative)
+
+	elif hemi =='right':
+		Nat_32=lookupHires(Rsrf32,RsrfNative)	
+
+		#### insert function for smoothing here?
+
+		ws=RWS
+		pkset1=get_peaks(ses_grads[0],ws)
+		pkset2=get_peaks(ses_grads[1],ws)
+
+		pkset1Nat=[Nat_32[z] for z in pkset1]
+		pkset2Nat=[Nat_32[z] for z in pkset2]
+
+		print(pkset1,pkset1Nat)
+		print(pkset2,pkset2Nat)
+
+		return dist_btw_pks(pkset1Nat,pkset2Nat,RsrfNative)
+
 
 
 ################################################################################################
@@ -388,8 +425,43 @@ else:
 	print('Raw Gradients Exist')
 	if hemi != 'left' and  hemi !='right':
 		print('doing on both hemispheres')
-	else:
+
+		for hemi in ['left','right']:
+### first step get in the raw files and check orientation 
+			pc1,pc2,de1,de2=load_grads(subj,hemi)
+
+			pc=[pc1,pc2]
+			de=[de1,de2]	
+
+			pca_valid=[]
+			for comp in range(len(pc)):
+				print(pc[comp])
+				pc[comp],val=gradientOrientation(pc[comp],hemi)
+				pca_valid.append(val)
+			de_valid=[]
+			for comp in range(len(de)):
+				print(de[comp])
+				de[comp],val=gradientOrientation(de[comp],hemi)
+				de_valid.append(val)
+ 
 		
+			if False in pca_valid:
+				print(' Diffusion Mapping has found at least one session\'s principal gradient separates sensory modalities. \n \
+				Non-canonical orientation, Peak detection will not be run.')
+			else: 
+				print(getXsessionPkDist(pc,hemi))
+
+
+			if False in de_valid:
+				print(' Diffusion Mapping has found at least one session\'s principal gradient separates sensory modalities. \n \
+				Non-canonical orientation, Peak detection will not be run.')
+			else: 
+				print(getXsessionPkDist(de,hemi))			
+
+
+
+	else:
+		### first step get in the raw files and check orientation 
 		pc1,pc2,de1,de2=load_grads(subj,hemi)
 
 		pc=[pc1,pc2]
@@ -406,14 +478,19 @@ else:
 			de[comp],val=gradientOrientation(de[comp],hemi)
 			de_valid.append(val)
 
-	### first step get in the raw files and check orientation 
-	### if both files don't correspond to gradient 1 then stop processing and flag subject. 
-	### flag each heimsphere separately though just in case. 
+			#### write for. diffusion embedding as that one works, then add in for PCA 
+		
+		if False in pca_valid:
+			print(' Diffusion Mapping has found at least one session\'s principal gradient separates sensory modalities. \n \
+			Non-canonical orientation, Peak detection will not be run.')
+		else: 
+			print(getXsessionPkDist(pc,hemi))
 
-	print(pca_valid)
-	print(de_valid)
 
-
-
+		if False in de_valid:
+			print(' Diffusion Mapping has found at least one session\'s principal gradient separates sensory modalities. \n \
+			Non-canonical orientation, Peak detection will not be run.')
+		else: 
+			print(getXsessionPkDist(de,hemi))
 
 
