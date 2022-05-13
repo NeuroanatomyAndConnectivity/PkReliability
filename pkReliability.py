@@ -53,7 +53,7 @@ print(odir)
 os.makedirs(odir,exist_ok=True)
 
 ###### set up files 
-subjdir=f'../{subj}/100206' ### the folder containing the Structural and Rest folders. Change to match cluster when access given
+subjdir=f'/Users/austin/Documents/ParisHorizontal/Mai2022Grads/{subj}/100206' ### the folder containing the Structural and Rest folders. Change to match cluster when access given
 fdir=f'{subjdir}/Rest'
 anatdir=f'{subjdir}/Structural'
 
@@ -81,14 +81,15 @@ RsphereNat=f'{anatdir}/{subj}.R.sphere.reg.reg_LR.native.surf.gii'
 Raparc=f'{anatdir}/{subj}.R.aparc.a2009s.32k_fs_LR.label.gii'
 
 ##### load watershed zone templates ##### place these in a fixed location on the server
-LWS=nib.load('../watershedTemplates/LWS.28.max.label.gii').agg_data()
-RWS=nib.load('../watershedTemplates/RWS.28.max.label.gii').agg_data()
+LWS=nib.load('/Users/austin/Documents/ParisHorizontal/Mai2022Grads/watershedTemplates/LWS.28.max.label.gii').agg_data()
+RWS=nib.load('/Users/austin/Documents/ParisHorizontal/Mai2022Grads/watershedTemplates/RWS.28.max.label.gii').agg_data()
 
 
 
 ####### define the functions we'll be using 
 
 def save_gifti(data,out):
+	"""Save gifti file providing a numpy array and an output file path"""
 	gi = nib.gifti.GiftiImage()
 	da = nib.gifti.GiftiDataArray(np.float32(data), intent=0)
 	gi.add_gifti_data_array(da)
@@ -253,6 +254,26 @@ def load_grads(dir,hemi):
 		return PC1,PC2,DE1,DE2
 
 
+def smooth_grad(grad,hemi):
+	##### first set up a label to only smooth over cortical values 
+	mask=nib.load(grad).agg_data()
+	mask[np.where(mask!=0)[0]]=1
+	save_gifti(mask,f'{odir}/cortexmask')
+
+	base=grad.split('.func.gii')[0]
+	
+	gradSet=[grad]
+
+	for krnl in [4,8,12,16]:
+		if hemi =='left':
+			gradSet.append(f'{base}_{krnl}mm.func.gii')
+			cmd=f'wb_command -metric-smoothing {Lsrf32} {grad} {krnl} {base}_{krnl}mm.func.gii -roi {odir}/cortexmask.func.gii'
+			sp.run(cmd,shell=True)
+		elif hemi == 'right':
+			gradSet.append(f'{base}_{krnl}mm.func.gii')
+			cmd=f'wb_command -metric-smoothing {Rsrf32} {grad} {krnl} {base}_{krnl}mm.func.gii -roi {odir}/cortexmask.func.gii'
+			sp.run(cmd,shell=True)
+	return gradSet
 
 def gradientOrientation(grad,hemi):
 	"""Determine the orientation of the gradients, and also return whether valid for continued study or not"""
@@ -427,7 +448,6 @@ else:
 		print('doing on both hemispheres')
 
 		for hemi in ['left','right']:
-### first step get in the raw files and check orientation 
 			pc1,pc2,de1,de2=load_grads(subj,hemi)
 
 			pc=[pc1,pc2]
@@ -446,7 +466,7 @@ else:
  
 		
 			if False in pca_valid:
-				print(' Diffusion Mapping has found at least one session\'s principal gradient separates sensory modalities. \n \
+				print(' PCA has found at least one session\'s principal gradient separates sensory modalities. \n \
 				Non-canonical orientation, Peak detection will not be run.')
 			else: 
 				print(getXsessionPkDist(pc,hemi))
@@ -464,15 +484,18 @@ else:
 		### first step get in the raw files and check orientation 
 		pc1,pc2,de1,de2=load_grads(subj,hemi)
 
+		print(pc1,pc2,de1,de2)
 		pc=[pc1,pc2]
 		de=[de1,de2]	
 
 		pca_valid=[]
+		pca_flip=[]
 		for comp in range(len(pc)):
 			print(pc[comp])
 			pc[comp],val=gradientOrientation(pc[comp],hemi)
 			pca_valid.append(val)
 		de_valid=[]
+		de_flip=[]
 		for comp in range(len(de)):
 			print(de[comp])
 			de[comp],val=gradientOrientation(de[comp],hemi)
@@ -481,16 +504,24 @@ else:
 			#### write for. diffusion embedding as that one works, then add in for PCA 
 		
 		if False in pca_valid:
-			print(' Diffusion Mapping has found at least one session\'s principal gradient separates sensory modalities. \n \
-			Non-canonical orientation, Peak detection will not be run.')
+			print(' PCA has found at least one session\'s principal gradient separates sensory modalities. \n \
+			Non-canonical orientation, Peak detection will not be run.\n')
 		else: 
+			##### smoothe before here then pass a list of "pc"
 			print(getXsessionPkDist(pc,hemi))
 
 
 		if False in de_valid:
 			print(' Diffusion Mapping has found at least one session\'s principal gradient separates sensory modalities. \n \
-			Non-canonical orientation, Peak detection will not be run.')
+			Non-canonical orientation, Peak detection will not be run.\n')
 		else: 
 			print(getXsessionPkDist(de,hemi))
+			ses1Set=smooth_grad(de1,hemi)
+			ses2Set=smooth_grad(de2,hemi)
+
+			for i,j in zip(ses1Set,ses2Set):
+				print(i,j)
+				subset=[nib.load(i).agg_data(),nib.load(j).agg_data()]
+				print(getXsessionPkDist(subset,hemi))
 
 
