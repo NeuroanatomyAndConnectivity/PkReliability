@@ -208,7 +208,7 @@ def save_grads(pcaMap,deMap,idxMap,session,hemi=''):
         rde[idxMap[0]['rIDX']]=deMap
         save_gifti(rde,f'{odir}/{subj}.R.DE.G1.{kernel}mmTsSes{session}')
 
-        print('debugging stops here #############')
+        
         return rpc,rde
     else: 
         lpcaMap=pcaMap[lcort]
@@ -237,52 +237,60 @@ def save_grads(pcaMap,deMap,idxMap,session,hemi=''):
 def load_grads(dir,hemi):
 	if hemi == 'left':
 		PC1=f'{odir}/{subj}.L.PCA.G1.{kernel}mmTsSes01.func.gii'
-		PC2=f'{odir}/{subj}.L.PCA.G1.{kernel}mmTsSes01.func.gii'
+		PC2=f'{odir}/{subj}.L.PCA.G1.{kernel}mmTsSes02.func.gii'
 
 		DE1=f'{odir}/{subj}.L.DE.G1.{kernel}mmTsSes01.func.gii'
-		DE2=f'{odir}/{subj}.L.DE.G1.{kernel}mmTsSes01.func.gii'
+		DE2=f'{odir}/{subj}.L.DE.G1.{kernel}mmTsSes02.func.gii'
 		return PC1,PC2,DE1,DE2
 	elif hemi =='right':
 		print('running right hemi')
 		PC1=f'{odir}/{subj}.R.PCA.G1.{kernel}mmTsSes01.func.gii'
-		PC2=f'{odir}/{subj}.R.PCA.G1.{kernel}mmTsSes01.func.gii'
+		PC2=f'{odir}/{subj}.R.PCA.G1.{kernel}mmTsSes02.func.gii'
 
 		DE1=f'{odir}/{subj}.R.DE.G1.{kernel}mmTsSes01.func.gii'
-		DE2=f'{odir}/{subj}.R.DE.G1.{kernel}mmTsSes01.func.gii'
+		DE2=f'{odir}/{subj}.R.DE.G1.{kernel}mmTsSes02.func.gii'
 		return PC1,PC2,DE1,DE2
 
 
 
 def gradientOrientation(grad,hemi):
+	"""Determine the orientation of the gradients, and also return whether valid for continued study or not"""
 	grad=nib.load(grad).agg_data()
 	if hemi=='left':
-		print('running left')
+		print('getting gradient orientation from Left hemisphere')
 		labels=nib.load(Laparc).agg_data()
 		calc=np.where(labels==45)[0]
 		ctr=np.where(labels==46)[0]
 		if np.sum(grad[calc])<0 and np.sum(grad[ctr])<0:
 			print('Canonical Orientation DMN at apex')
-			return grad
+			return grad,True
 		elif np.sum(grad[calc])<0 and np.sum(grad[ctr])>0:
-			print(f'{subj} has flipped gradient ordering. remove from study')
+			print(f'REMOVE {subj} FROM STUDY')
+			return grad,False
+		elif np.sum(grad[calc])>0 and np.sum(grad[ctr])<0:
+			print(f'REMOVE {subj} FROM STUDY')
+			return grad,False
 		else:
 			print('flipping gradient orientation for peak detection')
-			return grad *-1
+			return grad *-1,True
 		
 	elif hemi=='right':
-		print('running right')
-		labels=nib.load(Raparc)
+		print('getting gradient orientation from Right hemisphere')
+		labels=nib.load(Raparc).agg_data()
 		calc=np.where(labels==45)[0]
 		ctr=np.where(labels==46)[0]
 		if np.sum(grad[calc])<0 and np.sum(grad[ctr])<0:
 			print('Canonical Orientation DMN at apex')
-			return grad
+			return grad,True
 		elif np.sum(grad[calc])<0 and np.sum(grad[ctr])>0:
-			print(f'{subj} has flipped gradient ordering. remove from study')
-			return grad
+			print(f'REMOVE {subj} FROM STUDY')
+			return grad,False
+		elif np.sum(grad[calc])>0 and np.sum(grad[ctr])<0:
+			print(f'REMOVE {subj} FROM STUDY')
+			return grad,False
 		else:
 			print('flipping gradient orientation before peak detection')
-			return grad *-1
+			return grad *-1,True
 
 
 def get_peaks(grad,zoneParc):
@@ -387,16 +395,23 @@ else:
 		pc=[pc1,pc2]
 		de=[de1,de2]	
 
-		for comp in pc:
-			gradientOrientation(comp,hemi)
+		pca_valid=[]
+		for comp in range(len(pc)):
+			print(pc[comp])
+			pc[comp],val=gradientOrientation(pc[comp],hemi)
+			pca_valid.append(val)
+		de_valid=[]
+		for comp in range(len(de)):
+			print(de[comp])
+			de[comp],val=gradientOrientation(de[comp],hemi)
+			de_valid.append(val)
 
 	### first step get in the raw files and check orientation 
 	### if both files don't correspond to gradient 1 then stop processing and flag subject. 
 	### flag each heimsphere separately though just in case. 
 
-
-
-
+	print(pca_valid)
+	print(de_valid)
 
 
 
