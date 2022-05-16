@@ -368,7 +368,7 @@ def getXsessionPkDist(ses_grads,hemi,Nat_32):
 
 		print(pkset1,pkset1Nat)
 		print(pkset2,pkset2Nat)
-		return np.asarray([pkset1,pkset2,pkset1Nat,pkset2Nat,dist_btw_pks(pkset1Nat,pkset2Nat,LsrfNative)])
+		return np.asarray(dist_btw_pks(pkset1Nat,pkset2Nat,LsrfNative))
 
 	elif hemi =='right':
 
