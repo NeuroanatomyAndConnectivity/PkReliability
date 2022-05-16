@@ -388,70 +388,7 @@ def getXsessionPkDist(ses_grads,hemi,Nat_32):
 		return np.asarray(dist_btw_pks(pkset1Nat,pkset2Nat,RsrfNative))
 
 
-
-################################################################################################
-################################################################################################
-################################################################################################
-######################### Start the peak reliability detection bit #############################
-################################################################################################
-################################################################################################
-################################################################################################
-func_ses411=[]
-for data in range(len(func_ses)):
-	#### start by getting the indices of cortical vertices
-	func_ses411.append(get_corticalVertices(func_ses[data]))
-	##### smooth and clean the funcitonal time series
-kernel=5.0 #### smoothed time series kernel
-if pks==False:
-	 
-	for data in range(len(func_ses)):
-		##### smooth and clean the funcitonal time series
-		func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
-	#### concat the time series
-
-
-	ses1,ses2=concat_sessions(func_ses)
-
-	### clear memory
-	del func_ses
-
-	sessions=[ses1,ses2]
-	######### build the functional connectivity matrix ######### 
-	x=0
-	for ses in sessions:
-		x=x+1
-
-		if local==True:
-			dconn=calcFC_chunks(pick_cortex(ses,hemi))
-			print(dconn.shape)
-		else:
-			dconn=calcFC(pick_cortex(ses,hemi))
-			print(dconn.shape)
-
-		#### threshold the connectivity matrix 
-		dconn=threshMat(dconn,95)
-
-		##### do PCA on the thresholded connectivity matrix 
-		print('running pca')
-		pcaG1=pcaGrad(dconn)
-
-		#### do diffusion embedding on the cosine Affinity matrix of dconn
-		print('running diffusion maps')
-		dmG1=DiffEmbed(dconn)
-
-
-		pc32,de32=save_grads(pcaG1,dmG1,func_ses411,f'0{x}',hemi)
-
-		## clear memory 
-		del dconn 
-
-	#### now we do the peak distances across sessions
-	#### we exit the for loop and the code here is now the same as running the --pks option
-
-
-else:
-
-	print('Raw Gradients Exist')
+def post_embed(hemi):
 	if hemi != 'left' and  hemi !='right':
 		print('doing on both hemispheres')
 
@@ -571,6 +508,68 @@ else:
 				subset=[gradientOrientation(i,hemi)[0],gradientOrientation(j,hemi)[0]]
 				out.append(getXsessionPkDist(subset,hemi,Nat32))
 			np.save(f'{odir}/{subj}.{hemi}.DE.peaks+dists',np.asarray(out))
+################################################################################################
+################################################################################################
+################################################################################################
+######################### Start the peak reliability detection bit #############################
+################################################################################################
+################################################################################################
+################################################################################################
+func_ses411=[]
+for data in range(len(func_ses)):
+	#### start by getting the indices of cortical vertices
+	func_ses411.append(get_corticalVertices(func_ses[data]))
+	##### smooth and clean the funcitonal time series
+kernel=5.0 #### smoothed time series kernel
+if pks==False:
+	 
+	for data in range(len(func_ses)):
+		##### smooth and clean the funcitonal time series
+		func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
+	#### concat the time series
 
 
+	ses1,ses2=concat_sessions(func_ses)
+
+	### clear memory
+	del func_ses
+
+	sessions=[ses1,ses2]
+	######### build the functional connectivity matrix ######### 
+	x=0
+	for ses in sessions:
+		x=x+1
+
+		if local==True:
+			dconn=calcFC_chunks(pick_cortex(ses,hemi))
+			print(dconn.shape)
+		else:
+			dconn=calcFC(pick_cortex(ses,hemi))
+			print(dconn.shape)
+
+		#### threshold the connectivity matrix 
+		dconn=threshMat(dconn,95)
+
+		##### do PCA on the thresholded connectivity matrix 
+		print('running pca')
+		pcaG1=pcaGrad(dconn)
+
+		#### do diffusion embedding on the cosine Affinity matrix of dconn
+		print('running diffusion maps')
+		dmG1=DiffEmbed(dconn)
+
+
+		pc32,de32=save_grads(pcaG1,dmG1,func_ses411,f'0{x}',hemi)
+
+		## clear memory 
+		del dconn 
+
+	post_embed(hemi)
+	#### now we do the peak distances across sessions
+	#### we exit the for loop and the code here is now the same as running the --pks option
+
+
+else:
+
+	post_embed(hemi)
 
