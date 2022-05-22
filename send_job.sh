@@ -1,7 +1,11 @@
 #!/bin/bash
 
+#### load python environment 
 module load Python/3.8.6-GCCcore-10.2.0
 source /well/margulies/users/mnk884/python/pkReliability-skylake/bin/activate
+
+##### load workbench 
+module load ConnectomeWorkbench/1.4.2-rh_linux64
 
 ### job parameters
 
