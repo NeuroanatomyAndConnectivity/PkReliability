@@ -1,20 +1,18 @@
 #!/bin/bash
 
-#### load python environment 
-module load Python/3.8.6-GCCcore-10.2.0
-source /well/margulies/users/mnk884/python/pkReliability-skylake/bin/activate
-
-##### load workbench 
+#####load workbench 
 module load ConnectomeWorkbench/1.4.2-rh_linux64
-
+#### load python
+module load Python/3.9.6-GCCcore-11.2.0
+source /well/margulies/users/mnk884/python/pkReliability-skylake/bin/activate
 ### job parameters
 
 #$ -P PkRel
 #$ -cwd
-#$ -q short.qc
+#$ -q test.qc #short.qc
 #$ -j y
 #$ -o ./logs
-#$ -pe shmem 9
+#$ -pe shmem 1
 
 SUBJECT_LIST=./subjectList.txt
 nsubjs=`wc -l < $SUBJECT_LIST`
