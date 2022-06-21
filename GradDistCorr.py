@@ -104,12 +104,13 @@ data=np.hstack(funcs)
 del funcs
 print(data.shape)
 
-rmat=np.corrcoef(data)
 
 # print(rmat.shape)
 
+print('trying to do the thing')
 # print('hello corrmat')
-# # grads=DiffEmbed(rmat,3)
+grads=DiffEmbed(np.corrcoef(data),3)
+print(grads.shape)
 # # print("do embedding")
 
 # # save_gifti(grads.T,f'{odir}/grad_test')
