@@ -12,7 +12,7 @@ source /well/margulies/users/mnk884/python/pkReliability-skylake/bin/activate
 #$ -j y
 #$ -o ./logs
 #$ -pe shmem 7
-
+#$ -t 1
 SUBJECT_LIST=./subjectList.txt
 
 ### each subject forms one job of the array job
