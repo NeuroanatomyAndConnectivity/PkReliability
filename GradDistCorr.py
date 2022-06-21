@@ -78,8 +78,7 @@ Raparc=f'{anatdir}/{subj}.R.aparc.a2009s.32k_fs_LR.label.gii'
 
 ##### start dong the things ####
 
-print(get cortex_info )
-
+print('getting cortex info')
 func_ses411=[]
 for data in range(len(func_ses)):
 	#### start by getting the indices of cortical vertices
@@ -87,10 +86,13 @@ for data in range(len(func_ses)):
 	##### smooth and clean the funcitonal time series
 kernel=5.0 #### smoothed time series kernel
 
+print('smooth and clean the funcitonal time series')
 for data in range(len(func_ses)):
 	##### smooth and clean the funcitonal time series
 	func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
 
+
+print('concatenating time series')
 funcs=[]
 for i in func_ses:
 	#### extract cortical ROIs
