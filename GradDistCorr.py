@@ -82,3 +82,4 @@ RsphereNat=f'{anatdir}/{subj}.R.sphere.reg.reg_LR.native.surf.gii'
 Raparc=f'{anatdir}/{subj}.R.aparc.a2009s.32k_fs_LR.label.gii'
 
 
+print(Lsrf32,Rsrf32)
