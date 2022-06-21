@@ -7,14 +7,11 @@ module load Python/3.9.6-GCCcore-11.2.0
 source /well/margulies/users/mnk884/python/pkReliability-skylake/bin/activate
 ### job parameters
 
-#$ -P PkRel
 #$ -cwd
 #$ -q test.qc #short.qc
 #$ -j y
 #$ -o ./logs
 #$ -pe shmem 1
-#$ -t 1
-
 
 SUBJECT_LIST=./subjectList.txt
 
