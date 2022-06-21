@@ -92,16 +92,17 @@ for data in range(len(func_ses)):
 	func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
 
 
-# print('concatenating time series')
-# funcs=[]
-# for i in func_ses:
-# 	#### extract cortical ROIs
-# 	funcs.append(i.T[cortAll])
+print('concatenating time series')
+funcs=[]
+for i in func_ses:
+	#### extract cortical ROIs
+	print(i.shape)
+	funcs.append(i.T[cortAll])
 
-# del func_ses
-# data=np.hstack(funcs)
-
-# del funcs
+del func_ses
+data=np.hstack(funcs)
+del funcs
+print(data.shape)
 
 # rmat=np.corrcoef(data)
 
