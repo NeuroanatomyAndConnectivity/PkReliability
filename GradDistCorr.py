@@ -56,6 +56,12 @@ ses2RL=f'{fdir}/rfMRI_REST2_RL_Atlas_hp2000_clean.dtseries.nii'
 func_ses=[ses1LR,ses2RL,ses1RL,ses2LR]
 
 
+##### cifti indices 
+lcort=slice(0,29696)
+rcort=slice(29696, 59412)
+cortAll=slice(0,59412)
+
+
 #### left anatomical files
 Lsrf32=f'{anatdir}/{subj}.L.midthickness.32k_fs_LR.surf.gii'
 LsrfNative=f'{anatdir}/{subj}.L.midthickness.native.surf.gii'
@@ -70,5 +76,34 @@ Rsphere32=f'{anatdir}/{subj}.R.sphere.32k_fs_LR.surf.gii'
 RsphereNat=f'{anatdir}/{subj}.R.sphere.reg.reg_LR.native.surf.gii'
 Raparc=f'{anatdir}/{subj}.R.aparc.a2009s.32k_fs_LR.label.gii'
 
+##### start dong the things ####
 
-print(Lsrf32,Rsrf32)
+print(get cortex_info )
+
+func_ses411=[]
+for data in range(len(func_ses)):
+	#### start by getting the indices of cortical vertices
+	func_ses411.append(get_corticalVertices(func_ses[data]))
+	##### smooth and clean the funcitonal time series
+kernel=5.0 #### smoothed time series kernel
+
+for data in range(len(func_ses)):
+	##### smooth and clean the funcitonal time series
+	func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
+
+funcs=[]
+for i in func_ses:
+    #### extract cortical ROIs
+    funcs.append(i.T[cortAll])
+
+del func_ses
+data=np.hstack(funcs)
+
+del funcs
+
+rmat=np.corrcoef(data)
+
+grads=DiffEmbed(rmat,3)
+print("do embedding")
+
+save_gifti(grads.T,f'{odir}/grad_test')
