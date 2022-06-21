@@ -105,7 +105,9 @@ del funcs
 
 rmat=np.corrcoef(data)
 
-grads=DiffEmbed(rmat,3)
-print("do embedding")
+print(rmat.shape)
 
-save_gifti(grads.T,f'{odir}/grad_test')
+# grads=DiffEmbed(rmat,3)
+# print("do embedding")
+
+# save_gifti(grads.T,f'{odir}/grad_test')
