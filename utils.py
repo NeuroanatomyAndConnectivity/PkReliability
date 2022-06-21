@@ -112,6 +112,7 @@ def pcaGrad(data):
 	return pca.gradients_[:].squeeze()
 
 def DiffEmbed(data,ngrads):
+	""" FC matrix and number of gradients"""
 	####input is threshold FC matrix
 # 	aff = 1 - pairwise_distances(data, metric = 'cosine')
 	dm = GradientMaps(n_components=ngrads, random_state=42,approach='dm',kernel='cosine')

@@ -93,8 +93,8 @@ for data in range(len(func_ses)):
 
 funcs=[]
 for i in func_ses:
-    #### extract cortical ROIs
-    funcs.append(i.T[cortAll])
+	#### extract cortical ROIs
+	funcs.append(i.T[cortAll])
 
 del func_ses
 data=np.hstack(funcs)
