@@ -108,8 +108,8 @@ print(data.shape)
 
 print('trying to do the thing')
 # print('hello corrmat')
-# grads=DiffEmbed(np.corrcoef(data),3)
-# print(grads.shape)
-# # # print("do embedding")
+grads=DiffEmbed(np.corrcoef(data),3)
+print(grads.shape)
+print("do embedding")
 
-# # # save_gifti(grads.T,f'{odir}/grad_test')
+save_gifti(grads.T,f'{odir}/grad_test')
