@@ -13,13 +13,13 @@ source /well/margulies/users/mnk884/python/pkReliability-skylake/bin/activate
 #$ -j y
 #$ -o ./logs
 #$ -pe shmem 1
+#$ -t 1
+
 
 SUBJECT_LIST=./subjectList.txt
-nsubjs=`wc -l < $SUBJECT_LIST`
 
 ### each subject forms one job of the array job
 
-#$ -t 1-$nsubjs
 
 
 ####get file name 
