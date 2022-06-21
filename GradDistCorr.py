@@ -86,28 +86,29 @@ for data in range(len(func_ses)):
 	##### smooth and clean the funcitonal time series
 kernel=5.0 #### smoothed time series kernel
 
-print('smooth and clean the funcitonal time series')
-for data in range(len(func_ses)):
-	##### smooth and clean the funcitonal time series
-	func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
+# print('smooth and clean the funcitonal time series')
+# for data in range(len(func_ses)):
+# 	##### smooth and clean the funcitonal time series
+# 	func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
 
 
-print('concatenating time series')
-funcs=[]
-for i in func_ses:
-	#### extract cortical ROIs
-	funcs.append(i.T[cortAll])
+# print('concatenating time series')
+# funcs=[]
+# for i in func_ses:
+# 	#### extract cortical ROIs
+# 	funcs.append(i.T[cortAll])
 
-del func_ses
-data=np.hstack(funcs)
+# del func_ses
+# data=np.hstack(funcs)
 
-del funcs
+# del funcs
 
-rmat=np.corrcoef(data)
+# rmat=np.corrcoef(data)
 
-print(rmat.shape)
+# print(rmat.shape)
 
-# grads=DiffEmbed(rmat,3)
-# print("do embedding")
+# print('hello corrmat')
+# # grads=DiffEmbed(rmat,3)
+# # print("do embedding")
 
-# save_gifti(grads.T,f'{odir}/grad_test')
+# # save_gifti(grads.T,f'{odir}/grad_test')
