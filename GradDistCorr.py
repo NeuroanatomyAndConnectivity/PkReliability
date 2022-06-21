@@ -104,7 +104,7 @@ data=np.hstack(funcs)
 del funcs
 print(data.shape)
 
-# rmat=np.corrcoef(data)
+rmat=np.corrcoef(data)
 
 # print(rmat.shape)
 
