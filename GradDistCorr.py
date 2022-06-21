@@ -30,22 +30,11 @@ req_grp.add_argument('--subj',type=str,metavar='',required=True,help='HCP subjec
 req_grp.add_argument('--odir',type=str,metavar='',required=True,help='Output directory base. Output will be saved as odir/subj/...')
 
 op_grp= parser.add_argument_group(title='Optional arguments')
-op_grp.add_argument('--pks',action='store_true',help='Only do peak detection. Assumes embedding has been run previously')
-op_grp.add_argument('--local',action='store_true',help='Chunked calculation of Functional Connectivity Matrix using local HD or ramdisk to manage memory')
-op_grp.add_argument('--hemi',choices=['left','right'],type=str,metavar='',help='Default All. Otherwise specify \"left" or\"right".')
-# op_grp.add_argument("-h", "--help", action="help", help="show this help message and exit")
 args=parser.parse_args()
 
 #get arguments into variables
 subj=args.subj
 odir=args.odir
-pks=args.pks
-local=args.local
-hemi=args.hemi
-if hemi == None:
-	hemi='all'
-print(f'do peaks only is {pks}')
-print(f'running on {hemi} hemisphere(s)')
 
 ### set up subjects output directory 
 odir=f'{odir}/{subj}'
