@@ -86,10 +86,10 @@ for data in range(len(func_ses)):
 	##### smooth and clean the funcitonal time series
 kernel=5.0 #### smoothed time series kernel
 
-# print('smooth and clean the funcitonal time series')
-# for data in range(len(func_ses)):
-# 	##### smooth and clean the funcitonal time series
-# 	func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
+print('smooth and clean the funcitonal time series')
+for data in range(len(func_ses)):
+	##### smooth and clean the funcitonal time series
+	func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
 
 
 # print('concatenating time series')
