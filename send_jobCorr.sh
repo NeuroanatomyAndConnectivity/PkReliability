@@ -8,10 +8,10 @@ source /well/margulies/users/mnk884/python/pkReliability-skylake/bin/activate
 ### job parameters
 
 #$ -cwd
-#$ -q test.qc #short.qc
+#$ -q short.qc
 #$ -j y
 #$ -o ./logs
-#$ -pe shmem 1
+#$ -pe shmem 7
 
 SUBJECT_LIST=./subjectList.txt
 
