@@ -103,13 +103,20 @@ data=np.hstack(funcs)
 del funcs
 print(data.shape)
 
+print('the data type of the input is')
+print(data.dtype)
+print('######################')
 
-# print(rmat.shape)
+rmat=np.corrcoef(data)
+print(rmat.shape)
+
+np.save(f'{odir}/rmat.npy',rmat)
+
 
 print('trying to do the thing')
-# print('hello corrmat')
-grads=DiffEmbed(np.corrcoef(data),3)
-print(grads.shape)
-print("do embedding")
+## print('hello corrmat')
+#grads=DiffEmbed(np.corrcoef(data),3)
+#print(grads.shape)
+#print("do embedding")
 
-save_gifti(grads.T,f'{odir}/grad_test')
+#save_gifti(grads.T,f'{odir}/grad_test')
