@@ -43,7 +43,7 @@ os.makedirs(odir,exist_ok=True)
 
 cluster_path='/well/margulies/users/mnk884'
 ###### set up files 
-subjdir=f'{cluster_path}/{subj}/{subj}' ### the folder containing the Structural and Rest folders. Change to match cluster when access given
+subjdir=f'{cluster_path}/{subj}' ### the folder containing the Structural and Rest folders. Change to match cluster when access given
 fdir=f'{subjdir}/Rest'
 anatdir=f'{subjdir}/Structural'
 
@@ -84,7 +84,7 @@ for data in range(len(func_ses)):
 	#### start by getting the indices of cortical vertices
 	func_ses411.append(get_corticalVertices(func_ses[data]))
 	##### smooth and clean the funcitonal time series
-kernel=5.0 #### smoothed time series kernel
+kernel=6.0 #### smoothed time series kernel
 
 print('smooth and clean the funcitonal time series')
 for data in range(len(func_ses)):
@@ -93,30 +93,45 @@ for data in range(len(func_ses)):
 
 
 print('concatenating time series')
-funcs=[]
-for i in func_ses:
-	#### extract cortical ROIs
-	funcs.append(i.T[cortAll])
 
+data=np.vstack(func_ses).T
 del func_ses
-data=np.hstack(funcs)
-del funcs
-print(data.shape)
 
+print(data.shape)
 print('the data type of the input is')
 print(data.dtype)
 print('######################')
 
-rmat=np.corrcoef(data)
+
+print("generating connectome left")
+print('left cort shape')
+print(data[lcort].shape)
+
+np.corrcoef(data[lcort]).shape
+
+print("generating connectome right")
+
+print('right cort shape')
+print(data[rcort].shape)
+np.corrcoef(data[rcort]) 
+
+
+print("generating cortical connectome")
+print('full cort shape')
+print(data[cortAll].shape)
+rmat=np.corrcoef(data[cortAll])
 print(rmat.shape)
 
-np.save(f'{odir}/rmat.npy',rmat)
+
+
+np.save(f'{odir}/{subj}rmat.npy',rmat)
 
 
 print('trying to do the thing')
 ## print('hello corrmat')
-#grads=DiffEmbed(np.corrcoef(data),3)
-#print(grads.shape)
-#print("do embedding")
 
-#save_gifti(grads.T,f'{odir}/grad_test')
+grads=DiffEmbed(np.corrcoef(data),3)
+print(grads.shape)
+print("do embedding")
+
+np.save(f'{odir}/{subj}grads.npy', grads)
