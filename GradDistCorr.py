@@ -7,13 +7,14 @@ import nibabel as nib
 import numpy as np
 import brainspace as bs
 import subprocess as sp 
-import cython
 from nilearn import signal
 from scipy import spatial
-import gdist as gd
-from brainspace.gradient import GradientMaps
 from sklearn.metrics import pairwise_distances
-from surfdist.utils import find_node_match
+from brainspace.gradient import GradientMaps
+
+from brainspace.gradient.embedding import diffusion_mapping
+from scipy.spatial.distance import pdist, squareform
+
 from utils import *
 
 parser = argparse.ArgumentParser(description='Embeds functional Connectivity Matrix using PCA and diffusion map embedding, and then determines how far peaks are across sessions of the same subject',\
@@ -76,7 +77,7 @@ Rsphere32=f'{anatdir}/{subj}.R.sphere.32k_fs_LR.surf.gii'
 RsphereNat=f'{anatdir}/{subj}.R.sphere.reg.reg_LR.native.surf.gii'
 Raparc=f'{anatdir}/{subj}.R.aparc.a2009s.32k_fs_LR.label.gii'
 
-##### start dong the things ####
+##### start doing the things ####
 
 print('getting cortex info')
 func_ses411=[]
@@ -84,9 +85,9 @@ for data in range(len(func_ses)):
 	#### start by getting the indices of cortical vertices
 	func_ses411.append(get_corticalVertices(func_ses[data]))
 	##### smooth and clean the funcitonal time series
-kernel=6.0 #### smoothed time series kernel
+kernel=5.0 #### smoothed time series kernel
 
-print('smooth and clean the funcitonal time series')
+print('smooth and clean the functional time series')
 for data in range(len(func_ses)):
 	##### smooth and clean the funcitonal time series
 	func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
@@ -103,35 +104,58 @@ print(data.dtype)
 print('######################')
 
 
-print("generating connectome left")
-print('left cort shape')
-print(data[lcort].shape)
-
-np.corrcoef(data[lcort]).shape
-
-print("generating connectome right")
-
-print('right cort shape')
-print(data[rcort].shape)
-np.corrcoef(data[rcort]) 
-
-
 print("generating cortical connectome")
 print('full cort shape')
 print(data[cortAll].shape)
 rmat=np.corrcoef(data[cortAll])
 print(rmat.shape)
+print('correlation matrix done')
+
+
+#np.save(f'{odir}/{subj}rmat.npy',rmat)
+
+
+thr=threshMat(rmat,90)
+print('thresholding conn matrix to top 10% connectivity')
+del rmat 
+
+
+# Check for minimum value
+print("Minimum value is %f" % thr.min())
+
+# The negative values are very small, but we need to know how many nodes have negative values
+# Count negative values per row
+N = thr.shape[0]
+neg_values = np.array([sum(thr[i,:] < 0) for i in range(N)])
+print("Negative values occur in %d rows" % sum(neg_values > 0))
+
+thr[thr < 0] = 0
 
 
 
-np.save(f'{odir}/{subj}rmat.npy',rmat)
+aff = 1 -squareform(pdist(thr, metric='cosine')
+
+print('is the affinity matrix symetric????')
+print(np.allclose(aff,aff.T))
+print('#######################################')
+print('')
+print('affinity matrix built')
+print(aff.shape)
+np.save(f'{odir}/{subj}CosAff.npy',aff)
 
 
-print('trying to do the thing')
-## print('hello corrmat')
+print('running a quick little PCA')
+from sklearn.decomposition import PCA
 
-grads=DiffEmbed(np.corrcoef(data),3)
-print(grads.shape)
-print("do embedding")
+pca = PCA(n_components=3)
+pca.fit(aff)
+np.save(f'{odir}/{subj}.pca.npy',pca.components_.T)
+print('pca output has dimensions')
+print(pca.components_.T.shape)
 
-np.save(f'{odir}/{subj}grads.npy', grads)
+#print('import brainspace diffusion mapping')
+
+print('run the brainspace diffusion map embedding')
+
+maps,vals=diffusion_mapping(aff,n_components=3)
+np.save(f'{odir}/{subj}.dmap.grads.npy',maps)
