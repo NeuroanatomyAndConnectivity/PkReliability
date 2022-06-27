@@ -132,10 +132,10 @@ print("Negative values occur in %d rows" % sum(neg_values > 0))
 thr[thr < 0] = 0
 
 
-
-aff = 1 -squareform(pdist(thr, metric='cosine')
-
-print('is the affinity matrix symetric????')
+aff = 1 -squareform(pdist(thr, metric='cosine'))
+		    
+del thr
+print('is the fucking affinity matrix symmetric?')
 print(np.allclose(aff,aff.T))
 print('#######################################')
 print('')
