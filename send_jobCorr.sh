@@ -4,15 +4,15 @@
 module load ConnectomeWorkbench/1.4.2-rh_linux64
 #### load python
 module load Python/3.9.6-GCCcore-11.2.0
-source /well/margulies/users/mnk884/python/pkReliability-skylake/bin/activate
+source /well/margulies/users/mnk884/python/corrmats-skylake/bin/activate
 ### job parameters
 
 #$ -cwd
 #$ -q short.qc
 #$ -j y
 #$ -o ./logs
-#$ -pe shmem 7
-#$ -t 1
+#$ -pe shmem 10
+#$ -t 1-20
 SUBJECT_LIST=./subjectList.txt
 
 ### each subject forms one job of the array job
@@ -26,5 +26,6 @@ echo "Processing subject $FILENAME"
 
 # Load a recent python module
 
-# run pk reliability for subject 
-python GradDistCorr.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability 
+# run duffusion map embedding for subject 
+#python GradDistCorrTesting.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability
+python -u GradDistCorr.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability 

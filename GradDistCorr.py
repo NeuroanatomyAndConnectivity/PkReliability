@@ -10,12 +10,16 @@ import subprocess as sp
 from nilearn import signal
 from scipy import spatial
 from sklearn.metrics import pairwise_distances
+from sklearn.metrics.pairwise import cosine_similarity
 from brainspace.gradient import GradientMaps
-
 from brainspace.gradient.embedding import diffusion_mapping
 from scipy.spatial.distance import pdist, squareform
-
+import sys
+from mapalign import embed
 from utils import *
+print('imports are good')
+
+
 
 parser = argparse.ArgumentParser(description='Embeds functional Connectivity Matrix using PCA and diffusion map embedding, and then determines how far peaks are across sessions of the same subject',\
 	usage='pkReliability.py --subj <HCP subject> --odir <output directory> ',\
@@ -42,7 +46,7 @@ odir=f'{odir}/{subj}'
 print(odir)
 os.makedirs(odir,exist_ok=True)
 
-cluster_path='/well/margulies/users/mnk884'
+cluster_path='/well/margulies/users/mnk884/data20/'
 ###### set up files 
 subjdir=f'{cluster_path}/{subj}' ### the folder containing the Structural and Rest folders. Change to match cluster when access given
 fdir=f'{subjdir}/Rest'
@@ -132,16 +136,17 @@ print("Negative values occur in %d rows" % sum(neg_values > 0))
 thr[thr < 0] = 0
 
 
-aff = 1 -squareform(pdist(thr, metric='cosine'))
+aff=cosine_similarity(thr)
+#aff = 1 -squareform(pdist(thr, metric='cosine'))
 		    
 del thr
-print('is the fucking affinity matrix symmetric?')
+print('is the affinity matrix symmetric?')
 print(np.allclose(aff,aff.T))
 print('#######################################')
 print('')
 print('affinity matrix built')
 print(aff.shape)
-np.save(f'{odir}/{subj}CosAff.npy',aff)
+#np.save(f'{odir}/{subj}CosAff.npy',aff)
 
 
 print('running a quick little PCA')
@@ -149,13 +154,13 @@ from sklearn.decomposition import PCA
 
 pca = PCA(n_components=3)
 pca.fit(aff)
-np.save(f'{odir}/{subj}.pca.npy',pca.components_.T)
+np.save(f'{odir}/{subj}.pca.npy',pca.components_)
 print('pca output has dimensions')
-print(pca.components_.T.shape)
+print(pca.components_.shape)
 
-#print('import brainspace diffusion mapping')
 
-print('run the brainspace diffusion map embedding')
+print('doing embedding with mapalign')
+emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
 
-maps,vals=diffusion_mapping(aff,n_components=3)
-np.save(f'{odir}/{subj}.dmap.grads.npy',maps)
+np.save(f'{odir}/{subj}.mapalign.diffmap.npy',emb.T)
+print('embedding run wihtout errors')
