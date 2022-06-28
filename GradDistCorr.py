@@ -91,6 +91,10 @@ for data in range(len(func_ses)):
 	##### smooth and clean the funcitonal time series
 kernel=5.0 #### smoothed time series kernel
 
+#### save the cifti encoded brainmodel information 
+np.save(f'{odir}/{subj}.cifti.info.npy', func_ses411[0])
+#### to load dict  back do as follows tst=np.load('.cifti.info.npy',allow_pickle=True) 
+
 print('smooth and clean the functional time series')
 for data in range(len(func_ses)):
 	##### smooth and clean the funcitonal time series
