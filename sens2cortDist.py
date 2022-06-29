@@ -15,7 +15,7 @@ from dist_utils import *
 print('imports are good')
 
 
-
+#### note this script works but spits out a ton of warnings due to current implementation of surfdist.
 
 parser = argparse.ArgumentParser(description='Embeds functional Connectivity Matrix using PCA and diffusion map embedding, and then determines how far peaks are across sessions of the same subject',\
 	usage='pkReliability.py --subj <HCP subject> --odir <output directory> ',\
