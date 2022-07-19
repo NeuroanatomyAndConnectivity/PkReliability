@@ -104,7 +104,13 @@ for data in range(len(func_ses)):
 print('concatenating time series')
 
 data=np.vstack(func_ses).T
+
+data1=np.vstack([func_ses[0],func_ses[2]]).T
+
+data2=np.vstack([func_ses[1],func_ses[3]]).T
+
 del func_ses
+
 
 print(data.shape)
 print('the data type of the input is')
@@ -168,3 +174,144 @@ emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
 
 np.save(f'{odir}/{subj}.mapalign.diffmap.npy',emb.T)
 print('embedding run wihtout errors')
+
+del aff 
+
+#################################################################################
+#################################################################################
+#################################################################################
+#REWRITE THIS WHOLE SECTOIN AS A FUNCTIONAL LATER 
+
+
+
+print(data1.shape)
+print('the data1 type of the input is')
+print(data1.dtype)
+print('######################')
+
+
+print("generating cortical connectome SESSION 1")
+print('full cort shape')
+print(data1[cortAll].shape)
+rmat=np.corrcoef(data1[cortAll])
+print(rmat.shape)
+print('correlation matrix done')
+
+
+#np.save(f'{odir}/{subj}rmat.npy',rmat)
+
+
+thr=threshMat(rmat,95)
+print('thresholding conn matrix to top 10% connectivity')
+del rmat 
+
+
+# Check for minimum value
+print("Minimum value is %f" % thr.min())
+
+# The negative values are very small, but we need to know how many nodes have negative values
+# Count negative values per row
+N = thr.shape[0]
+neg_values = np.array([sum(thr[i,:] < 0) for i in range(N)])
+print("Negative values occur in %d rows" % sum(neg_values > 0))
+
+thr[thr < 0] = 0
+
+
+aff=cosine_similarity(thr)
+#aff = 1 -squareform(pdist(thr, metric='cosine'))
+		    
+del thr
+print('is the affinity matrix symmetric?')
+print(np.allclose(aff,aff.T))
+print('#######################################')
+print('')
+print('affinity matrix built')
+print(aff.shape)
+#np.save(f'{odir}/{subj}CosAff.npy',aff)
+
+
+print('running a quick little PCA')
+from sklearn.decomposition import PCA
+
+pca = PCA(n_components=3)
+pca.fit(aff)
+np.save(f'{odir}/{subj}.pca.ses1.npy',pca.components_)
+print('pca output has dimensions')
+print(pca.components_.shape)
+
+
+print('doing embedding with mapalign')
+emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
+
+np.save(f'{odir}/{subj}.mapalign.ses1.diffmap.npy',emb.T)
+print('embedding run wihtout errors')
+
+del aff
+
+
+
+print(data2.shape)
+print('the data2 type of the input is')
+print(data2.dtype)
+print('######################')
+
+
+print("generating cortical connectome SESSION 2")
+print('full cort shape')
+print(data2[cortAll].shape)
+rmat=np.corrcoef(data2[cortAll])
+print(rmat.shape)
+print('correlation matrix done')
+
+
+#np.save(f'{odir}/{subj}rmat.npy',rmat)
+
+
+thr=threshMat(rmat,95)
+print('thresholding conn matrix to top 10% connectivity')
+del rmat 
+
+
+# Check for minimum value
+print("Minimum value is %f" % thr.min())
+
+# The negative values are very small, but we need to know how many nodes have negative values
+# Count negative values per row
+N = thr.shape[0]
+neg_values = np.array([sum(thr[i,:] < 0) for i in range(N)])
+print("Negative values occur in %d rows" % sum(neg_values > 0))
+
+thr[thr < 0] = 0
+
+
+aff=cosine_similarity(thr)
+#aff = 1 -squareform(pdist(thr, metric='cosine'))
+		    
+del thr
+print('is the affinity matrix symmetric?')
+print(np.allclose(aff,aff.T))
+print('#######################################')
+print('')
+print('affinity matrix built')
+print(aff.shape)
+#np.save(f'{odir}/{subj}CosAff.npy',aff)
+
+
+print('running a quick little PCA')
+from sklearn.decomposition import PCA
+
+pca = PCA(n_components=3)
+pca.fit(aff)
+np.save(f'{odir}/{subj}.pca.ses2.npy',pca.components_)
+print('pca output has dimensions')
+print(pca.components_.shape)
+
+
+print('doing embedding with mapalign')
+emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
+
+np.save(f'{odir}/{subj}.mapalign.ses2.diffmap.npy',emb.T)
+print('embedding run wihtout errors')
+
+
