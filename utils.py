@@ -7,13 +7,13 @@ import nibabel as nib
 import numpy as np
 import brainspace as bs
 import subprocess as sp 
-import cython
+#import cython
 from nilearn import signal
 from scipy import spatial
-import gdist as gd
+#import gdist as gd
 from brainspace.gradient import GradientMaps
 from sklearn.metrics import pairwise_distances
-from surfdist.utils import find_node_match
+#from surfdist.utils import find_node_match
 np.set_printoptions(suppress=True)
 
 ####### define the functions we'll be using 

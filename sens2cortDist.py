@@ -86,8 +86,8 @@ for hemi in ['L','R']:
         
         nodes=utils.find_node_match(s1v,s2v)
         dist32=dists[nodes[0]]
-        np.save(f'/well/margulies/projects/pkReliability/{subj}.{hemi}.dist.native.npy',dists)
-        np.save(f'/well/margulies/projects/pkReliability/{subj}.{hemi}.dist32K.npy',dist32)
+        np.save(f'{odir}/{subj}.{hemi}.dist.native.npy',dists)
+        np.save(f'{odir}/{subj}.{hemi}.dist32K.npy',dist32)
         
     if hemi =='R':
         ### calc distances
@@ -102,6 +102,6 @@ for hemi in ['L','R']:
         nodes=utils.find_node_match(s1v,s2v)
         dist32=dists[nodes[0]]
         
-        np.save(f'/well/margulies/projects/pkReliability/{subj}.{hemi}.dist.native.npy',dists)
-        np.save(f'/well/margulies/projects/pkReliability/{subj}.{hemi}.dist32K.npy',dist32)
+        np.save(f'{odir}/{subj}.{hemi}.dist.native.npy',dists)
+        np.save(f'{odir}/{subj}.{hemi}.dist32K.npy',dist32)
         

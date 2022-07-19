@@ -215,7 +215,7 @@ def gradientOrientation(grad,atlas):
 		print('Canonical Orientation DMN at apex')
 		return grad,True
 	elif np.sum(grad[calc])<0 and np.sum(grad[ctr])>0:
-		print(f'REMOVE {subj} FROM STUDY')
+		print(f'REMOVE  FROM STUDY')
 		return grad,False
 	elif np.sum(grad[calc])>0 and np.sum(grad[ctr])<0:
 		print(f'REMOVE {subj} FROM STUDY')
@@ -427,6 +427,7 @@ def extract_roi(atlas,roi):
     return np.where(atl==roi)[0]
 
 def calc_dists(atlas,surf):
+    """atlas and surface inputs"""
     #### Load labels
     atlas = nib.load(atlas)
     ### load surface
@@ -441,8 +442,8 @@ def calc_dists(atlas,surf):
     roi_ind_s1=46 
     roi_ind_a1=75
     
-    cort=np.where(atlas.darrays[0].data!=0)[0]
-    MW=np.where(atlas.darrays[0].data==0)[0]
+    cort=np.where(atlas.darrays[0].data>0)[0]
+    MW=np.where(atlas.darrays[0].data<0)[0]
     
     ### set up rois to iterate
     labels=[roi_ind_v1,roi_ind_s1,roi_ind_a1]
@@ -459,10 +460,10 @@ def calc_dists(atlas,surf):
     
     #### get zones and min dist maps
     min_dist = np.min(sens_dists, axis=0)
-    zones = np.argmin(sens_dists, axis=0)+1
+    #zones = np.argmin(sens_dists, axis=0)+1
     
-    min_dist[MW]=0
-    zones[MW]=0
+    #min_dist[MW]=0
+    #zones[MW]=0
 #     print(min_dist.shape)
 #     out_dict={}
 #     out_dict[subj]=min_dist

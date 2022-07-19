@@ -6,7 +6,7 @@ module load ConnectomeWorkbench/1.4.2-rh_linux64
 module load Python/3.9.6-GCCcore-11.2.0
 source /well/margulies/users/mnk884/python/corrmats-skylake/bin/activate
 ### job parameters
-
+#$ -N gradGen
 #$ -cwd
 #$ -q short.qc
 #$ -j y
