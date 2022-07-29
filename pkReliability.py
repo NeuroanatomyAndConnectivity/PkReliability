@@ -63,7 +63,10 @@ ses1LR=f'{fdir}/rfMRI_REST1_LR_Atlas_hp2000_clean.dtseries.nii'
 ses2LR=f'{fdir}/rfMRI_REST2_LR_Atlas_hp2000_clean.dtseries.nii'
 ses1RL=f'{fdir}/rfMRI_REST1_RL_Atlas_hp2000_clean.dtseries.nii'
 ses2RL=f'{fdir}/rfMRI_REST2_RL_Atlas_hp2000_clean.dtseries.nii'
-func_ses=[ses1LR,ses2RL,ses1RL,ses2LR]
+# func_ses=[ses1LR,ses2RL,ses1RL,ses2LR]
+
+#### changed at suggestion of wei. will run to see if helps gradient consistency
+func_ses=[ses1LR,ses1RL,ses2LR,ses2RL]
 
 
 #### left anatomical files
