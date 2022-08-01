@@ -93,6 +93,7 @@ for data in range(len(func_ses)):
 
 for k in kernel [2 4 6 8 10]:
 
+	print(f'using kernel {k}')
 	#### save the cifti encoded brainmodel information 
 	np.save(f'{odir}/{subj}.cifti.info.npy', func_ses411[0])
 	#### to load dict  back do as follows tst=np.load('.cifti.info.npy',allow_pickle=True) 
