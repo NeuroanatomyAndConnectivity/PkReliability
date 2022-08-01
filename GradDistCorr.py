@@ -90,8 +90,8 @@ for data in range(len(func_ses)):
 	func_ses411.append(get_corticalVertices(func_ses[data]))
 	##### smooth and clean the funcitonal time series
 # kernel=5.0 #### smoothed time series kernel
-
-for k in kernel [2 4 6 8 10]:
+kernel=[2,4,6,8,10]
+for k in kernel:
 
 	print(f'using kernel {k}')
 	#### save the cifti encoded brainmodel information 
