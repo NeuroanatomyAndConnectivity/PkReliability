@@ -28,4 +28,4 @@ echo "Processing subject $FILENAME"
 
 # run duffusion map embedding for subject 
 #python GradDistCorrTesting.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability
-python -u GradDistCorr.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability 
+python -u GradDistCorr.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability --kernel 4
