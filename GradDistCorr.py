@@ -132,7 +132,7 @@ print('correlation matrix done')
 #np.save(f'{odir}/{subj}rmat.npy',rmat)
 
 
-thr=threshMat(rmat,90)
+thr=threshMat(rmat,95)
 print('thresholding conn matrix to top 10% connectivity')
 del rmat 
 
@@ -204,7 +204,7 @@ print('correlation matrix done')
 #np.save(f'{odir}/{subj}rmat.npy',rmat)
 
 
-thr=threshMat(rmat,90)
+thr=threshMat(rmat,95)
 print('thresholding conn matrix to top 10% connectivity')
 del rmat 
 
@@ -271,7 +271,7 @@ print('correlation matrix done')
 #np.save(f'{odir}/{subj}rmat.npy',rmat)
 
 
-thr=threshMat(rmat,90)
+thr=threshMat(rmat,95)
 print('thresholding conn matrix to top 10% connectivity')
 del rmat 
 
