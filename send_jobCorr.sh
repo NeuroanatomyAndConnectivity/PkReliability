@@ -1,12 +1,14 @@
 #!/bin/bash
 
+smooth_kernel=$1
+
 #####load workbench 
 module load ConnectomeWorkbench/1.4.2-rh_linux64
 #### load python
 module load Python/3.9.6-GCCcore-11.2.0
 source /well/margulies/users/mnk884/python/corrmats-skylake/bin/activate
 ### job parameters
-#$ -N gradGen
+#$ -N gradGenS${smooth_kernel}mm
 #$ -cwd
 #$ -q short.qc
 #$ -j y
@@ -28,4 +30,4 @@ echo "Processing subject $FILENAME"
 
 # run duffusion map embedding for subject 
 #python GradDistCorrTesting.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability
-python -u GradDistCorr.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability --kernel 4
+python -u GradDistCorr.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability --kernel ${smooth_kernel}
