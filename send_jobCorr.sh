@@ -8,7 +8,7 @@ module load ConnectomeWorkbench/1.4.2-rh_linux64
 module load Python/3.9.6-GCCcore-11.2.0
 source /well/margulies/users/mnk884/python/corrmats-skylake/bin/activate
 ### job parameters
-#$ -N gradGenS${smooth_kernel}mm
+#$ -N gradGen
 #$ -cwd
 #$ -q short.qc
 #$ -j y
@@ -19,7 +19,7 @@ SUBJECT_LIST=./subjectList.txt
 
 ### each subject forms one job of the array job
 
-
+echo "smoothing kernel is" ${smooth_kernel}
 
 ####get file name 
 FILENAME=$(sed -n "${SGE_TASK_ID}p" $SUBJECT_LIST)
