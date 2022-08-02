@@ -101,7 +101,7 @@ np.save(f'{odir}/{subj}.cifti.info.npy', func_ses411[0])
 print('smooth and clean the functional time series')
 for data in range(len(func_ses)):
 	##### smooth and clean the funcitonal time series
-	func_ses[data]=wb_smoothCleanTs(func_ses[data],k,Lsrf32,Rsrf32)
+	func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
 
 
 print('concatenating time series')
