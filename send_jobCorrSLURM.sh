@@ -4,10 +4,10 @@
 #SBATCH --job-name=gradGen
 #SBATCH -o ./logs/gradGenJob-%j.out
 #SBATCH -p short
-#SBATCH --cpus-per-task=10
-#SBATCH --array=1-5:1
+#SBATCH --cpus-per-task=8
+#SBATCH --array=1-1018:1
 #SBATCH --requeue
-SUBJECT_LIST=SubjectsCompleteData.txt
+SUBJECT_LIST=./SubjectsCompleteData.txt
 smooth_kernel=$1
 
 #####load workbench
