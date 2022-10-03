@@ -38,7 +38,7 @@ def wb_smoothCleanTs(subject,func_dat,kernel,leftSrf,rightSrf):
 # 	inter=func_dat.split('dtseries.nii')[0]+f'{kernel}mm.dtseries.nii' #### named inter because file will be deleted
 	tempStorage='/well/margulies/users/mnk884/PkReliability/tempFiles'
 	print(inter)
-	inter=f'{tempStorage}/{subj}.0{kernel}mm.dtseries.nii' #### implementation for using hcp data on the cluster. 
+	inter=f'{tempStorage}/{subject}.0{kernel}mm.dtseries.nii' #### implementation for using hcp data on the cluster. 
 	#### one of the few times we'll be writing data
 	print(f'the intermediate file out is {inter}')
 	cmd=f'wb_command -cifti-smoothing {func_dat} {kernel} {kernel} COLUMN {inter} -left-surface {leftSrf} -right-surface {rightSrf}'
