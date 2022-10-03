@@ -36,6 +36,8 @@ def post_smooth(func):
 def wb_smoothCleanTs(func_dat,kernel,leftSrf,rightSrf):
 	"""" Smoooth, Normalize and Bandpass Filter data """
 	inter=func_dat.split('dtseries.nii')[0]+f'{kernel}mm.dtseries.nii' #### named inter because file will be deleted
+	tempStorage='/well/margulies/users/mnk884/PkReliability/tempFiles'
+	print(inter)
 	cmd=f'wb_command -cifti-smoothing {func_dat} {kernel} {kernel} COLUMN {inter} -left-surface {leftSrf} -right-surface {rightSrf}'
 	sp.run(cmd,shell=True)
 	clnTs=post_smooth(inter)
