@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=10
 #SBATCH --array=1-5:1
 #SBATCH --requeue
-SUBJECT_LIST=./test.txt
+SUBJECT_LIST=SubjectsCompleteData.txt
 smooth_kernel=$1
 
 #####load workbench
