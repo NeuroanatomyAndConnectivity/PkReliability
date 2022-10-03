@@ -33,6 +33,7 @@ if len(sys.argv) < 2:
 req_grp = parser.add_argument_group(title='Required arguments')
 req_grp.add_argument('--subj',type=str,metavar='',required=True,help='HCP subject to run on')
 req_grp.add_argument('--odir',type=str,metavar='',required=True,help='Output directory base. Output will be saved as odir/subj/...')
+req_grp.add_argument('--kernel',type=str,metavar='',required=True,help='specify smoothing kernel of time series')
 
 op_grp= parser.add_argument_group(title='Optional arguments')
 args=parser.parse_args()
@@ -40,10 +41,12 @@ args=parser.parse_args()
 #get arguments into variables
 subj=args.subj
 odir=args.odir
+kernel=args.kernel
 
 ### set up subjects output directory 
 odir=f'{odir}/{subj}'
 print(odir)
+print(kernel)
 os.makedirs(odir,exist_ok=True)
 
 cluster_path='/well/margulies/users/mnk884/data20/'
@@ -89,231 +92,227 @@ for data in range(len(func_ses)):
 	#### start by getting the indices of cortical vertices
 	func_ses411.append(get_corticalVertices(func_ses[data]))
 	##### smooth and clean the funcitonal time series
-# kernel=5.0 #### smoothed time series kernel
-kernel=[2,4,6,8,10]
-for k in kernel:
 
-	print(f'using kernel {k}')
-	#### save the cifti encoded brainmodel information 
-	np.save(f'{odir}/{subj}.cifti.info.npy', func_ses411[0])
-	#### to load dict  back do as follows tst=np.load('.cifti.info.npy',allow_pickle=True) 
+print(f'using kernel {kernel}')
+#### save the cifti encoded brainmodel information 
+np.save(f'{odir}/{subj}.cifti.info.npy', func_ses411[0])
+#### to load dict  back do as follows tst=np.load('.cifti.info.npy',allow_pickle=True) 
 
-	print('smooth and clean the functional time series')
-	for data in range(len(func_ses)):
-		##### smooth and clean the funcitonal time series
-		func_ses[data]=wb_smoothCleanTs(func_ses[data],k,Lsrf32,Rsrf32)
+print('smooth and clean the functional time series')
+for data in range(len(func_ses)):
+	##### smooth and clean the funcitonal time series
+	func_ses[data]=wb_smoothCleanTs(func_ses[data],kernel,Lsrf32,Rsrf32)
 
 
-	print('concatenating time series')
+print('concatenating time series')
 
-	data=np.vstack(func_ses).T
+data=np.vstack(func_ses).T
 
-	data1=np.vstack([func_ses[0],func_ses[2]]).T
+data1=np.vstack([func_ses[0],func_ses[2]]).T
 
-	data2=np.vstack([func_ses[1],func_ses[3]]).T
+data2=np.vstack([func_ses[1],func_ses[3]]).T
 
-	del func_ses
+del func_ses
 
 
-	print(data.shape)
-	print('the data type of the input is')
-	print(data.dtype)
-	print('######################')
+print(data.shape)
+print('the data type of the input is')
+print(data.dtype)
+print('######################')
 
 
-	print("generating cortical connectome")
-	print('full cort shape')
-	print(data[cortAll].shape)
-	rmat=np.corrcoef(data[cortAll])
-	print(rmat.shape)
-	print('correlation matrix done')
+print("generating cortical connectome")
+print('full cort shape')
+print(data[cortAll].shape)
+rmat=np.corrcoef(data[cortAll])
+print(rmat.shape)
+print('correlation matrix done')
 
 
-	#np.save(f'{odir}/{subj}rmat.npy',rmat)
+#np.save(f'{odir}/{subj}rmat.npy',rmat)
 
 
-	thr=threshMat(rmat,95)
-	print('thresholding conn matrix to top 10% connectivity')
-	del rmat 
+thr=threshMat(rmat,95)
+print('thresholding conn matrix to top 10% connectivity')
+del rmat 
 
 
-	# Check for minimum value
-	print("Minimum value is %f" % thr.min())
+# Check for minimum value
+print("Minimum value is %f" % thr.min())
 
-	# The negative values are very small, but we need to know how many nodes have negative values
-	# Count negative values per row
-	N = thr.shape[0]
-	neg_values = np.array([sum(thr[i,:] < 0) for i in range(N)])
-	print("Negative values occur in %d rows" % sum(neg_values > 0))
+# The negative values are very small, but we need to know how many nodes have negative values
+# Count negative values per row
+N = thr.shape[0]
+neg_values = np.array([sum(thr[i,:] < 0) for i in range(N)])
+print("Negative values occur in %d rows" % sum(neg_values > 0))
 
-	thr[thr < 0] = 0
+thr[thr < 0] = 0
 
 
-	aff=cosine_similarity(thr)
-	#aff = 1 -squareform(pdist(thr, metric='cosine'))
-			    
-	del thr
-	print('is the affinity matrix symmetric?')
-	print(np.allclose(aff,aff.T))
-	print('#######################################')
-	print('')
-	print('affinity matrix built')
-	print(aff.shape)
-	#np.save(f'{odir}/{subj}CosAff.npy',aff)
+aff=cosine_similarity(thr)
+#aff = 1 -squareform(pdist(thr, metric='cosine'))
+		    
+del thr
+print('is the affinity matrix symmetric?')
+print(np.allclose(aff,aff.T))
+print('#######################################')
+print('')
+print('affinity matrix built')
+print(aff.shape)
+#np.save(f'{odir}/{subj}CosAff.npy',aff)
 
 
-	print('running a quick little PCA')
-	from sklearn.decomposition import PCA
+print('running a quick little PCA')
+from sklearn.decomposition import PCA
 
-	pca = PCA(n_components=3)
-	pca.fit(aff)
-	np.save(f'{odir}/{subj}.pca.s{k}mm.npy',pca.components_)
-	print('pca output has dimensions')
-	print(pca.components_.shape)
+pca = PCA(n_components=3)
+pca.fit(aff)
+np.save(f'{odir}/{subj}.pca.s0{kernel}mm.npy',pca.components_)
+print('pca output has dimensions')
+print(pca.components_.shape)
 
 
-	print('doing embedding with mapalign')
-	emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
+print('doing embedding with mapalign')
+emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
 
-	np.save(f'{odir}/{subj}.mapalign.diffmaps.{k}mm.npy',emb.T)
-	print('embedding run wihtout errors')
+np.save(f'{odir}/{subj}.mapalign.diffmaps.0{kernel}mm.npy',emb.T)
+print('embedding run wihtout errors')
 
-	del aff 
+del aff 
 
-	#################################################################################
-	#################################################################################
-	#################################################################################
-	#REWRITE THIS WHOLE SECTOIN AS A FUNCTIONAL LATER 
+#################################################################################
+#################################################################################
+#################################################################################
+#REWRITE THIS WHOLE SECTOIN AS A FUNCTIONAL LATER 
 
 
 
-	print(data1.shape)
-	print('the data1 type of the input is')
-	print(data1.dtype)
-	print('######################')
+print(data1.shape)
+print('the data1 type of the input is')
+print(data1.dtype)
+print('######################')
 
 
-	print("generating cortical connectome SESSION 1")
-	print('full cort shape')
-	print(data1[cortAll].shape)
-	rmat=np.corrcoef(data1[cortAll])
-	print(rmat.shape)
-	print('correlation matrix done')
+print("generating cortical connectome SESSION 1")
+print('full cort shape')
+print(data1[cortAll].shape)
+rmat=np.corrcoef(data1[cortAll])
+print(rmat.shape)
+print('correlation matrix done')
 
 
-	#np.save(f'{odir}/{subj}rmat.npy',rmat)
+#np.save(f'{odir}/{subj}rmat.npy',rmat)
 
 
-	thr=threshMat(rmat,95)
-	print('thresholding conn matrix to top 10% connectivity')
-	del rmat 
+thr=threshMat(rmat,95)
+print('thresholding conn matrix to top 10% connectivity')
+del rmat 
 
 
-	# Check for minimum value
-	print("Minimum value is %f" % thr.min())
+# Check for minimum value
+print("Minimum value is %f" % thr.min())
 
-	# The negative values are very small, but we need to know how many nodes have negative values
-	# Count negative values per row
-	N = thr.shape[0]
-	neg_values = np.array([sum(thr[i,:] < 0) for i in range(N)])
-	print("Negative values occur in %d rows" % sum(neg_values > 0))
+# The negative values are very small, but we need to know how many nodes have negative values
+# Count negative values per row
+N = thr.shape[0]
+neg_values = np.array([sum(thr[i,:] < 0) for i in range(N)])
+print("Negative values occur in %d rows" % sum(neg_values > 0))
 
-	thr[thr < 0] = 0
+thr[thr < 0] = 0
 
 
-	aff=cosine_similarity(thr)
-	#aff = 1 -squareform(pdist(thr, metric='cosine'))
-			    
-	del thr
-	print('is the affinity matrix symmetric?')
-	print(np.allclose(aff,aff.T))
-	print('#######################################')
-	print('')
-	print('affinity matrix built')
-	print(aff.shape)
-	#np.save(f'{odir}/{subj}CosAff.npy',aff)
+aff=cosine_similarity(thr)
+#aff = 1 -squareform(pdist(thr, metric='cosine'))
+		    
+del thr
+print('is the affinity matrix symmetric?')
+print(np.allclose(aff,aff.T))
+print('#######################################')
+print('')
+print('affinity matrix built')
+print(aff.shape)
+#np.save(f'{odir}/{subj}CosAff.npy',aff)
 
 
-	print('running a quick little PCA')
-	from sklearn.decomposition import PCA
+print('running a quick little PCA')
+from sklearn.decomposition import PCA
 
-	pca = PCA(n_components=3)
-	pca.fit(aff)
-	np.save(f'{odir}/{subj}.pca.ses1.s{k}mm.npy',pca.components_)
-	print('pca output has dimensions')
-	print(pca.components_.shape)
+pca = PCA(n_components=3)
+pca.fit(aff)
+np.save(f'{odir}/{subj}.pca.ses1.s0{kernel}mm.npy',pca.components_)
+print('pca output has dimensions')
+print(pca.components_.shape)
 
 
-	print('doing embedding with mapalign')
-	emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
+print('doing embedding with mapalign')
+emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
 
-	np.save(f'{odir}/{subj}.mapalign.ses1.diffmap.s{k}mm.npy',emb.T)
-	print('embedding run wihtout errors')
+np.save(f'{odir}/{subj}.mapalign.ses1.diffmap.s0{kernel}mm.npy',emb.T)
+print('embedding run wihtout errors')
 
-	del aff
+del aff
 
 
 
-	print(data2.shape)
-	print('the data2 type of the input is')
-	print(data2.dtype)
-	print('######################')
+print(data2.shape)
+print('the data2 type of the input is')
+print(data2.dtype)
+print('######################')
 
 
-	print("generating cortical connectome SESSION 2")
-	print('full cort shape')
-	print(data2[cortAll].shape)
-	rmat=np.corrcoef(data2[cortAll])
-	print(rmat.shape)
-	print('correlation matrix done')
+print("generating cortical connectome SESSION 2")
+print('full cort shape')
+print(data2[cortAll].shape)
+rmat=np.corrcoef(data2[cortAll])
+print(rmat.shape)
+print('correlation matrix done')
 
 
-	#np.save(f'{odir}/{subj}rmat.npy',rmat)
+#np.save(f'{odir}/{subj}rmat.npy',rmat)
 
 
-	thr=threshMat(rmat,95)
-	print('thresholding conn matrix to top 10% connectivity')
-	del rmat 
+thr=threshMat(rmat,95)
+print('thresholding conn matrix to top 10% connectivity')
+del rmat 
 
 
-	# Check for minimum value
-	print("Minimum value is %f" % thr.min())
+# Check for minimum value
+print("Minimum value is %f" % thr.min())
 
-	# The negative values are very small, but we need to know how many nodes have negative values
-	# Count negative values per row
-	N = thr.shape[0]
-	neg_values = np.array([sum(thr[i,:] < 0) for i in range(N)])
-	print("Negative values occur in %d rows" % sum(neg_values > 0))
+# The negative values are very small, but we need to know how many nodes have negative values
+# Count negative values per row
+N = thr.shape[0]
+neg_values = np.array([sum(thr[i,:] < 0) for i in range(N)])
+print("Negative values occur in %d rows" % sum(neg_values > 0))
 
-	thr[thr < 0] = 0
+thr[thr < 0] = 0
 
 
-	aff=cosine_similarity(thr)
-	#aff = 1 -squareform(pdist(thr, metric='cosine'))
-			    
-	del thr
-	print('is the affinity matrix symmetric?')
-	print(np.allclose(aff,aff.T))
-	print('#######################################')
-	print('')
-	print('affinity matrix built')
-	print(aff.shape)
-	#np.save(f'{odir}/{subj}CosAff.npy',aff)
+aff=cosine_similarity(thr)
+#aff = 1 -squareform(pdist(thr, metric='cosine'))
+		    
+del thr
+print('is the affinity matrix symmetric?')
+print(np.allclose(aff,aff.T))
+print('#######################################')
+print('')
+print('affinity matrix built')
+print(aff.shape)
+#np.save(f'{odir}/{subj}CosAff.npy',aff)
 
 
-	print('running a quick little PCA')
-	from sklearn.decomposition import PCA
+print('running a quick little PCA')
+from sklearn.decomposition import PCA
 
-	pca = PCA(n_components=3)
-	pca.fit(aff)
-	np.save(f'{odir}/{subj}.pca.ses2.s{k}mm.npy',pca.components_)
-	print('pca output has dimensions')
-	print(pca.components_.shape)
+pca = PCA(n_components=3)
+pca.fit(aff)
+np.save(f'{odir}/{subj}.pca.ses2.s0{kernel}mm.npy',pca.components_)
+print('pca output has dimensions')
+print(pca.components_.shape)
 
 
-	print('doing embedding with mapalign')
-	emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
+print('doing embedding with mapalign')
+emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
 
-	np.save(f'{odir}/{subj}.mapalign.ses2.s{k}mm.diffmap.npy',emb.T)
-	print('embedding run wihtout errors')
-
+np.save(f'{odir}/{subj}.mapalign.ses2.s0{kernel}mm.diffmap.npy',emb.T)
+print('embedding run wihtout errors')
