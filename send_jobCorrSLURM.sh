@@ -30,5 +30,5 @@ echo "Processing subject $FILENAME"
 # Load a recent python module
 
 
-python -u GradDistCorrFullHCP.py --subj $FILENAME  --odir /well/margulies/data/hcpGrads --kernel ${smooth_kernel}
+python -u GradDistCorrFullHCP.py --subj $FILENAME  --odir /well/margulies/projects/data/hcpGrads --kernel ${smooth_kernel}
 
