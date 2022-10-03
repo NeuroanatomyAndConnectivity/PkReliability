@@ -49,18 +49,21 @@ print(odir)
 print(kernel)
 os.makedirs(odir,exist_ok=True)
 
-cluster_path='/well/margulies/users/mnk884/data20/'
+# cluster_path='/well/margulies/users/mnk884/data20/'
+cluster_path='/well/win-hcp/HCP-YA/subjectsAll'
 ###### set up files 
 subjdir=f'{cluster_path}/{subj}' ### the folder containing the Structural and Rest folders. Change to match cluster when access given
-fdir=f'{subjdir}/Rest'
-anatdir=f'{subjdir}/Structural'
+fdir=f'{subjdir}/MNINonLinear/Results/'
+anatdirNat=f'{subjdir}/T1w/Native/'
+anatdir32=f'{subjdir}/T1w/fsaverage_LR32k/'
+MNINonlinearDir=f'{subjdir}/MNINonLinear'
 
 
 ##### resting state time series paths 
-ses1LR=f'{fdir}/rfMRI_REST1_LR_Atlas_hp2000_clean.dtseries.nii'
-ses2LR=f'{fdir}/rfMRI_REST2_LR_Atlas_hp2000_clean.dtseries.nii'
-ses1RL=f'{fdir}/rfMRI_REST1_RL_Atlas_hp2000_clean.dtseries.nii'
-ses2RL=f'{fdir}/rfMRI_REST2_RL_Atlas_hp2000_clean.dtseries.nii'
+ses1LR=f'{fdir}/rfMRI_REST1_LR/rfMRI_REST1_LR_Atlas_MSMAll_hp2000_clean.dtseries.nii'
+ses2LR=f'{fdir}/rfMRI_REST2_LR/rfMRI_REST2_LR_Atlas_MSMAll_hp2000_clean.dtseries.nii'
+ses1RL=f'{fdir}/rfMRI_REST1_RL/rfMRI_REST1_RL_Atlas_MSMAll_hp2000_clean.dtseries.nii'
+ses2RL=f'{fdir}/rfMRI_REST2_RL/rfMRI_REST2_RL_Atlas_MSMAll_hp2000_clean.dtseries.nii'
 func_ses=[ses1LR,ses2RL,ses1RL,ses2LR]
 
 
@@ -71,18 +74,18 @@ cortAll=slice(0,59412)
 
 
 #### left anatomical files
-Lsrf32=f'{anatdir}/{subj}.L.midthickness.32k_fs_LR.surf.gii'
-LsrfNative=f'{anatdir}/{subj}.L.midthickness.native.surf.gii'
-Lsphere32=f'{anatdir}/{subj}.L.sphere.32k_fs_LR.surf.gii'
-LsphereNat=f'{anatdir}/{subj}.L.sphere.reg.reg_LR.native.surf.gii'
-Laparc=f'{anatdir}/{subj}.L.aparc.a2009s.32k_fs_LR.label.gii'
+Lsrf32=f'{anatdir32}/{subj}.L.midthickness_MSMAll.32k_fs_LR.surf.gii'
+LsrfNative=f'{anatdirNat}/{subj}.L.midthickness.native.surf.gii'
+# Lsphere32=f'{anatdir32}/{subj}.L.sphere_MSMAll.32k_fs_LR.surf.gii'
+# LsphereNat=f'{anatdirNat}/{subj}.L.sphere.reg.reg_LR.native.surf.gii'
+# Laparc=f'{MNINonlinearDir}/fsaverage_LR32k/{subj}.L.aparc.a2009s.32k_fs_LR.label.gii'
 
 #### right anatomical files 
-Rsrf32=f'{anatdir}/{subj}.R.midthickness.32k_fs_LR.surf.gii'
-RsrfNative=f'{anatdir}/{subj}.R.midthickness.native.surf.gii'
-Rsphere32=f'{anatdir}/{subj}.R.sphere.32k_fs_LR.surf.gii'
-RsphereNat=f'{anatdir}/{subj}.R.sphere.reg.reg_LR.native.surf.gii'
-Raparc=f'{anatdir}/{subj}.R.aparc.a2009s.32k_fs_LR.label.gii'
+Rsrf32=f'{anatdir32}/{subj}.R.midthickness.32k_fs_LR.surf.gii'
+RsrfNative=f'{anatdirNat}/{subj}.R.midthickness.native.surf.gii'
+# Rsphere32=f'{anatdir32}/{subj}.R.sphere.32k_fs_LR.surf.gii'
+# RsphereNat=f'{anatdirNat}/{subj}.R.sphere.reg.reg_LR.native.surf.gii'
+# Raparc=f'{MNINonlinearDir}/fsaverage_LR32k/{subj}.R.aparc.a2009s.32k_fs_LR.label.gii'
 
 ##### start doing the things ####
 
@@ -132,7 +135,7 @@ print('correlation matrix done')
 #np.save(f'{odir}/{subj}rmat.npy',rmat)
 
 
-thr=threshMat(rmat,95)
+thr=threshMat(rmat,90)
 print('thresholding conn matrix to top 10% connectivity')
 del rmat 
 
