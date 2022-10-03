@@ -4,6 +4,7 @@
 #SBATCH --job-name=gradGen
 #SBATCH -o ./logs/gradGenJob-%j.out
 #SBATCH -p short
+#SBATCH --constraint="skl-compat"
 #SBATCH --cpus-per-task=8
 #SBATCH --array=1-1018:1
 #SBATCH --requeue
