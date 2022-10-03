@@ -2,12 +2,12 @@
 
 ### job parameters
 #SBATCH --job-name=gradGen
-#SBATCH -o gradGenJob-%j.out
+#SBATCH -o ./logs/gradGenJob-%j.out
 #SBATCH -p short
 #SBATCH --cpus-per-task=10
 #SBATCH --array=1-5:1
 #SBATCH --requeue
-SUBJECT_LIST=./subjectList.txt
+SUBJECT_LIST=./test.txt
 smooth_kernel=$1
 
 #####load workbench
@@ -32,5 +32,5 @@ echo "Processing subject $FILENAME"
 # run duffusion map embedding for subject 
 #python GradDistCorrTesting.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability
 
-python -u GradDistCorr.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability --kernel ${smooth_kernel}
+python -u GradDistCorrFullHCP.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability --kernel ${smooth_kernel}
 
