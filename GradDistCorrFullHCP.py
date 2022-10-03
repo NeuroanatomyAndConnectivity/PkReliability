@@ -104,7 +104,6 @@ np.save(f'{odir}/{subj}.cifti.info.npy', func_ses411[0])
 print('smooth and clean the functional time series')
 for data in range(len(func_ses)):
 	##### smooth and clean the funcitonal time series
-	print(f'the sting being passed to the smoothing function is')
 	print(func_ses[data])
 	func_ses[data]=wb_smoothCleanTs(subj,func_ses[data],kernel,Lsrf32,Rsrf32)
 
