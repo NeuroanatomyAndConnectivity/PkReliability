@@ -81,7 +81,7 @@ LsrfNative=f'{anatdirNat}/{subj}.L.midthickness.native.surf.gii'
 # Laparc=f'{MNINonlinearDir}/fsaverage_LR32k/{subj}.L.aparc.a2009s.32k_fs_LR.label.gii'
 
 #### right anatomical files 
-Rsrf32=f'{anatdir32}/{subj}.R.midthickness.32k_fs_LR.surf.gii'
+Rsrf32=f'{anatdir32}/{subj}.R.midthickness_MSMAll.32k_fs_LR.surf.gii'
 RsrfNative=f'{anatdirNat}/{subj}.R.midthickness.native.surf.gii'
 # Rsphere32=f'{anatdir32}/{subj}.R.sphere.32k_fs_LR.surf.gii'
 # RsphereNat=f'{anatdirNat}/{subj}.R.sphere.reg.reg_LR.native.surf.gii'
