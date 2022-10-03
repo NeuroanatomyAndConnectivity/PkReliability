@@ -29,8 +29,6 @@ echo "Processing subject $FILENAME"
 
 # Load a recent python module
 
-# run duffusion map embedding for subject 
-#python GradDistCorrTesting.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability
 
-python -u GradDistCorrFullHCP.py --subj $FILENAME  --odir /well/margulies/projects/pkReliability --kernel ${smooth_kernel}
+python -u GradDistCorrFullHCP.py --subj $FILENAME  --odir /well/margulies/data/hcpGrads --kernel ${smooth_kernel}
 
