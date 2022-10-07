@@ -26,7 +26,12 @@ class hcp_subj:
     def __init__(self,subj,kernel,pca=None,neighbours=None):
         
         self.subj=subj
-        self.info=np.load(f'{subj}/{subj}.cifti.info.npy',allow_pickle=True).item()
+        
+        clusterPath='/well/margulies/projects/data/hcpGrads'
+        anat32Path=f'/well/win-hcp/HCP-YA/subjectsAll/{subj}/T1w/fsaverage_LR32k'
+        MNIpath=f'/well/win-hcp/HCP-YA/subjectsAll/{subj}/MNINonLinear/fsaverage_LR32k'
+        
+        self.info=np.load(f'{clusterPath}/{subj}/{subj}.cifti.info.npy',allow_pickle=True).item()
         
         self.dims=self.info['lnverts']
         self.Lfill=self.info['lIDX']
@@ -34,30 +39,30 @@ class hcp_subj:
         self.pca=pca
         self.neighbours=neighbours
         
-        self.Lsrf=f'../data20/{subj}/Structural/{subj}.L.midthickness.32k_fs_LR.surf.gii'
+        self.Lsrf=f'{anat32Path}/{subj}.L.midthickness_MSMAll.32k_fs_LR.surf.gii'
         self.Lcoords=nib.load(self.Lsrf).darrays[0].data
         self.Lfaces=nib.load(self.Lsrf).darrays[1].data
         
-        self.Linflated='/Users/austin/Documents/ParisHorizontal/32k_fs_LR/S1200.L.inflated_MSMAll.32k_fs_LR.surf.gii'
+        self.Linflated=f'{anat32Path}/{subj}.L.inflated_MSMAll.32k_fs_LR.surf.gii'
         
         
-        self.Rsrf=f'../data20/{subj}/Structural/{subj}.R.midthickness.32k_fs_LR.surf.gii'
+        self.Rsrf=f'{anat32Path}/{subj}.R.midthickness_MSMAll.32k_fs_LR.surf.gii'
         self.Rcoords=nib.load(self.Rsrf).darrays[0].data
         self.Rfaces=nib.load(self.Rsrf).darrays[1].data
 
         
 
-        self.Laparc=f'../data20/{subj}/Structural/{subj}.L.aparc.a2009s.32k_fs_LR.label.gii'
+        self.Laparc=f'{MNIpath}/{subj}.L.aparc.a2009s.32k_fs_LR.label.gii'
         
         self.LV1=np.where(nib.load(self.Laparc).darrays[0].data==45)[0]
         self.LS1=np.where(nib.load(self.Laparc).darrays[0].data==46)[0]
         self.LA1=np.where(nib.load(self.Laparc).darrays[0].data==75)[0]
         
         
-        self.Rinflated='/Users/austin/Documents/ParisHorizontal/32k_fs_LR/S1200.R.inflated_MSMAll.32k_fs_LR.surf.gii'
+        self.Rinflated=f'{anat32Path}/{subj}.R.inflated_MSMAll.32k_fs_LR.surf.gii'
 
         
-        self.Raparc=f'../data20/{subj}/Structural/{subj}.R.aparc.a2009s.32k_fs_LR.label.gii'
+        self.Raparc=f'{MNIpath}/{subj}/{subj}.R.aparc.a2009s.32k_fs_LR.label.gii'
         
         self.RV1=np.where(nib.load(self.Raparc).darrays[0].data==45)[0]
         self.RS1=np.where(nib.load(self.Raparc).darrays[0].data==46)[0]
