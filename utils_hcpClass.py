@@ -3,18 +3,18 @@ import nibabel as nib
 
 import nilearn.plotting
 import matplotlib.pyplot as plt
-#import mayavi
-#from mayavi import mlab
-#import ptitprince as pt
+import mayavi
+from mayavi import mlab
+import ptitprince as pt
 import seaborn as sn
 import pandas as pd
 
 from utils import *
 
-#import networkx as nx
-#import gdist
-#import surfdist as sd 
-#import surfdist.analysis  
+import networkx as nx
+import gdist
+import surfdist as sd 
+import surfdist.analysis  
 
 from sklearn.cluster import KMeans
 
