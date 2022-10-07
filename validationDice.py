@@ -230,7 +230,7 @@ with open('SubjectsCompleteData.txt') as file:
     subjects=file.read()
 subjects=subjects.split('\n')
 
-
+print(f'using {len(subjects)} of subjects")
 
 def prep_plotting(subj,kernel,sim='dice',pca=False):
 #     print(subj)
