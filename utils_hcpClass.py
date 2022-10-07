@@ -3,23 +3,20 @@ import nibabel as nib
 
 import nilearn.plotting
 import matplotlib.pyplot as plt
-import mayavi
-from mayavi import mlab
-import ptitprince as pt
+#import mayavi
+#from mayavi import mlab
+#import ptitprince as pt
 import seaborn as sn
 import pandas as pd
 
 from utils import *
 
-import networkx as nx
-import gdist
-import surfdist as sd 
-import surfdist.analysis  
+#import networkx as nx
+#import gdist
+#import surfdist as sd 
+#import surfdist.analysis  
 
 from sklearn.cluster import KMeans
-
-from IPython.display import display, HTML
-import matplotlib.offsetbox as offsetbox
 
 
 LWS=nib.load('/well/margulies/users/mnk884/PkReliability/watershed_templates/LWS.28.max.label.gii').darrays[0].data
