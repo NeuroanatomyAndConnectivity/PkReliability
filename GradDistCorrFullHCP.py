@@ -135,8 +135,9 @@ print('correlation matrix done')
 
 #np.save(f'{odir}/{subj}rmat.npy',rmat)
 
-
-thr=threshMat(rmat,90)
+thresh=95
+#### the first version of gradients is 90. this one is 95 and will be reflected in file output
+thr=threshMat(rmat,thresh)
 print('thresholding conn matrix to top 10% connectivity')
 del rmat 
 
@@ -171,7 +172,7 @@ from sklearn.decomposition import PCA
 
 pca = PCA(n_components=3)
 pca.fit(aff)
-np.save(f'{odir}/{subj}.pca.s0{kernel}mm.npy',pca.components_)
+np.save(f'{odir}/{subj}.pca.{thresh}.s0{kernel}mm.npy',pca.components_)
 print('pca output has dimensions')
 print(pca.components_.shape)
 
@@ -179,7 +180,7 @@ print(pca.components_.shape)
 print('doing embedding with mapalign')
 emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
 
-np.save(f'{odir}/{subj}.mapalign.diffmaps.0{kernel}mm.npy',emb.T)
+np.save(f'{odir}/{subj}.mapalign.{thresh}.diffmaps.0{kernel}mm.npy',emb.T)
 print('embedding run wihtout errors')
 
 del aff 
@@ -243,7 +244,7 @@ from sklearn.decomposition import PCA
 
 pca = PCA(n_components=3)
 pca.fit(aff)
-np.save(f'{odir}/{subj}.pca.ses1.s0{kernel}mm.npy',pca.components_)
+np.save(f'{odir}/{subj}.pca.{thresh}.ses1.s0{kernel}mm.npy',pca.components_)
 print('pca output has dimensions')
 print(pca.components_.shape)
 
@@ -251,7 +252,7 @@ print(pca.components_.shape)
 print('doing embedding with mapalign')
 emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
 
-np.save(f'{odir}/{subj}.mapalign.ses1.diffmap.s0{kernel}mm.npy',emb.T)
+np.save(f'{odir}/{subj}.mapalign.{thresh}.ses1.diffmap.s0{kernel}mm.npy',emb.T)
 print('embedding run wihtout errors')
 
 del aff
@@ -310,7 +311,7 @@ from sklearn.decomposition import PCA
 
 pca = PCA(n_components=3)
 pca.fit(aff)
-np.save(f'{odir}/{subj}.pca.ses2.s0{kernel}mm.npy',pca.components_)
+np.save(f'{odir}/{subj}.pca.{thresh}.ses2.s0{kernel}mm.npy',pca.components_)
 print('pca output has dimensions')
 print(pca.components_.shape)
 
@@ -318,5 +319,5 @@ print(pca.components_.shape)
 print('doing embedding with mapalign')
 emb= embed.compute_diffusion_map(aff, alpha = 0.5,n_components=3)
 
-np.save(f'{odir}/{subj}.mapalign.ses2.s0{kernel}mm.diffmap.npy',emb.T)
+np.save(f'{odir}/{subj}.mapalign.{thresh}.ses2.s0{kernel}mm.diffmap.npy',emb.T)
 print('embedding run wihtout errors')
