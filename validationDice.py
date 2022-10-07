@@ -229,6 +229,7 @@ class hcp_subj:
 with open('SubjectsCompleteData.txt') as file:
     subjects=file.read()
 subjects=subjects.split('\n')
+subjects.pop()
 
 print(f'using {len(subjects)} of subjects')
 
