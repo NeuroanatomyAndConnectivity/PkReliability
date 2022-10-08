@@ -9,7 +9,7 @@ subj=sys.argv[1]
 print(f'calculating distance from gradient mask to  parcels for subject {subj}')
 
 def DistFromGradMask(subj,threshold):
-	subj_inst=hcp_subj(subj)
+	subj_inst=hcp_subj(subj,4)
 	grads=subj_inst.extract_topX(subj_inst.Lgrad,subj_inst.Rgrad,threshold)
 	Lsurf=[subj_inst.Lcoords,subj_inst.Lfaces]
 	Ldist=surfdist.analysis.dist_calc(Lsurf,subj_inst.Lfill,grads[0])
