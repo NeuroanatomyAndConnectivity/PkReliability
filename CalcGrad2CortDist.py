@@ -4,6 +4,8 @@ import surfdist
 import subprocess as sp
 import surfdist.analysis
 import surfdist.utils
+from surfdist.utils import find_node_match
+from surfdist.utils import find_node_match
 import surfdist as sd
 import sys
 
@@ -24,6 +26,9 @@ def DistFromGradMask(subj,threshold):
 	sp.run(f'wb_command -surface-vertex-areas {subj_inst.Rsrf} tmp/{subj}.R.area.func.gii',shell=True)
 	Rarea=np.sqrt(np.sum(nib.load(f'tmp/{subj}.R.area.func.gii').darrays[0].data[subj_inst.Rfill]))
 	# sp.run('rm R.area.func.gii',shell=True)
+
+
+	print('if you see this message than it has been run succesffuly despite all the numba warnings from surfdist')
 	return [Ldist,Larea,Rdist,Rarea]
 
 results=DistFromGradMask(subj,90)
