@@ -3,7 +3,7 @@ import nibabel as nib
 import matplotlib.pyplot as plt
 import seaborn as sn
 import pandas as pd
-
+import pickle
 
 def recort(X,fill,dims):
     out=np.zeros(dims)
@@ -301,6 +301,14 @@ for k in kernels:
 dm_reject=np.asarray(dm_reject)
 pc_reject=np.asarray(pc_reject)
 
+
+with open("pc_rejects", "wb") as pc_rej:   #Pickling
+    pickle.dump(pc_dirtySubj, pc_rej)
+    
+with open("dm_rejects", "wb") as dm_rej:   #Pickling
+    pickle.dump(dm_dirtySubj, pc_rej)
+
+
 # # sn.set()
 g=sn.lineplot(x=kernels,y=dm_reject,markers=True, dashes=True,marker='o',label='Dmap')
 g=sn.lineplot(x=kernels,y=pc_reject,markers=True, dashes=True,marker='o',label='PCA')
@@ -369,4 +377,20 @@ for key in regions:
     plt.subplot(155)
     plot_itHue(subjects,10,regions[key],legend=True)
     plt.savefig(f'./{key}_corr.png',facecolor='w')
+    
+    
+for key in regions:
+    f, ax = plt.subplots(ncols=5,nrows=1,figsize=(16,6))
+    plt.subplot(151)
+    plot_itHue(subjects,2,regions[key],corr=False)
+    plt.subplot(152)
+    plot_itHue(subjects,4,regions[key],corr=False)
+    plt.subplot(153)
+    plot_itHue(subjects,6,regions[key],corr=False)
+    plt.gca().set_title(key,fontsize = 20)
+    plt.subplot(154)
+    plot_itHue(subjects,8,regions[key],corr=False)
+    plt.subplot(155)
+    plot_itHue(subjects,10,regions[key],legend=True,corr=False)
+    plt.savefig(f'./{key}_NoCorr.png',facecolor='w')
 
