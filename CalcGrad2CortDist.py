@@ -13,7 +13,6 @@ def DistFromGradMask(subj,threshold):
 	grads=subj_inst.extract_topX(subj_inst.Lgrad,subj_inst.Rgrad,threshold)
 	Lsurf=[subj_inst.Lcoords,subj_inst.Lfaces]
 	Ldist=surfdist.analysis.dist_calc(Lsurf,subj_inst.Lfill,grads[0])
-    
     Rsurf=[subj_inst.Rcoords,subj_inst.Rfaces]
     Rdist=surfdist.analysis.dist_calc(Rsurf,subj_inst.Rfill,grads[1])
     
@@ -26,7 +25,6 @@ def DistFromGradMask(subj,threshold):
     sp.run(f'wb_command -surface-vertex-areas {subj_inst.Rsrf} R.area.func.gii',shell=True)
     Rarea=np.sqrt(np.sum(nib.load('R.area.func.gii').darrays[0].data[subj_inst.Rfill]))
     sp.run('rm R.area.func.gii',shell=True)
-
     return [Ldist,Larea,Rdist,Rarea]
 
 results=DistFromGradMask(subj,90)
