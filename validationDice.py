@@ -306,7 +306,7 @@ with open("pc_rejects", "wb") as pc_rej:   #Pickling
     pickle.dump(pc_dirtySubj, pc_rej)
     
 with open("dm_rejects", "wb") as dm_rej:   #Pickling
-    pickle.dump(dm_dirtySubj, pc_rej)
+    pickle.dump(dm_dirtySubj, dm_rej)
 
 
 # # sn.set()
