@@ -3,6 +3,8 @@ import pickle
 import surfdist
 import subprocess as sp
 import surfdist.analysis
+import surfdist.utils
+import surfdist as sd
 import sys
 
 subj=sys.argv[1]
@@ -18,10 +20,10 @@ def DistFromGradMask(subj,threshold):
 	##### get the surface areas -- sqrt(sum of cortical vertex areas) 
 	sp.run(f'wb_command -surface-vertex-areas {subj_inst.Lsrf} tmp/{subj}.L.area.func.gii',shell=True)
 	Larea=np.sqrt(np.sum(nib.load(f'tmp/{subj}.L.area.func.gii').darrays[0].data[subj_inst.Lfill]))
-	sp.run('rm L.area.func.gii',shell=True)
+	# sp.run('rm L.area.func.gii',shell=True)
 	sp.run(f'wb_command -surface-vertex-areas {subj_inst.Rsrf} tmp/{subj}.R.area.func.gii',shell=True)
 	Rarea=np.sqrt(np.sum(nib.load(f'tmp/{subj}.R.area.func.gii').darrays[0].data[subj_inst.Rfill]))
-	sp.run('rm R.area.func.gii',shell=True)
+	# sp.run('rm R.area.func.gii',shell=True)
 	return [Ldist,Larea,Rdist,Rarea]
 
 results=DistFromGradMask(subj,90)
