@@ -26,5 +26,5 @@ def DistFromGradMask(subj,threshold):
 
 results=DistFromGradMask(subj,90)
 
-with open(f"results/distancesFromGradMask/{subj}.DistFromGrad.pickle", "wb") as dist   #Pickling
+with open(f"results/distancesFromGradMask/{subj}.DistFromGrad.pickle", "wb") as dist:
 	pickle.dump(results, dist)
