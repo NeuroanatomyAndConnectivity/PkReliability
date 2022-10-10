@@ -20,13 +20,19 @@ def DistFromGradMask(subj,threshold):
 	####mparietal zone == 7 
 	LWS=nib.load('watershed_templates/LWS.28.max.label.gii').darrays[0].data
 	LparZone=np.where(LWS==7)[0]
+	LoccZone=np.where(LWS==9)[0]
 	RWS=nib.load('watershed_templates/RWS.28.max.label.gii').darrays[0].data
 	RparZone=np.where(RWS==7)[0]
+	RoccZone=np.where(RWS==9)[0]
 
 	Linter=np.intersect1d(LparZone,grads[0])
 	Rinter=np.intersect1d(RparZone,grads[1])
 
-	if len(Linter)>0 and len(Rinter)>0:
+	LinterOcc=np.intersect1d(LoccZone,grads[0])
+	LinterOcc=np.intersect1d(RoccZone,grads[0])
+
+
+	if len(Linter)>0 and len(Rinter)>0 and LinterOcc==0 and len(RoccZone)==0:
 		print('subject gradient includes medial parietal zone')
 		Lsurf=[subj_inst.Lcoords,subj_inst.Lfaces]
 		Ldist=surfdist.analysis.dist_calc(Lsurf,subj_inst.Lfill,grads[0])
