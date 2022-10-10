@@ -32,7 +32,7 @@ def DistFromGradMask(subj,threshold):
 	RinterOcc=np.intersect1d(RoccZone,grads[0])
 
 
-	if len(Linter)>0 and len(Rinter)>0 and LinterOcc==0 and len(RinterOcc)==0:
+	if Linter.size>0 and Rinter.size>0 and LinterOcc.size==0 and RinterOcc.size==0:
 		print('subject gradient includes medial parietal zone')
 		Lsurf=[subj_inst.Lcoords,subj_inst.Lfaces]
 		Ldist=surfdist.analysis.dist_calc(Lsurf,subj_inst.Lfill,grads[0])
