@@ -2,7 +2,7 @@
 
 ### job parameters
 #SBATCH --job-name=GradDist
-#SBATCH -o ./logs/gradDistJob-%j.out
+#SBATCH -o ./logs/S12peaksDistJob-%j.out
 #SBATCH -p short
 #SBATCH --constraint="skl-compat"
 #SBATCH --cpus-per-task=1
