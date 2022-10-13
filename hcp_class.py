@@ -80,6 +80,8 @@ class hcp_subj:
         
 
         self.Laparc=f'{MNIpath}/{subj}.L.aparc.a2009s.32k_fs_LR.label.gii'
+        self.Lsulc=f'{MNIpath}/{subj}.L.sulc.32k_fs_LR.shape.gii'
+        
         
         self.LV1=np.where(nib.load(self.Laparc).darrays[0].data==45)[0]
         self.LS1=np.where(nib.load(self.Laparc).darrays[0].data==46)[0]
@@ -90,6 +92,7 @@ class hcp_subj:
 
         
         self.Raparc=f'{MNIpath}/{subj}.R.aparc.a2009s.32k_fs_LR.label.gii'
+        self.Rsulc=f'{MNIpath}/{subj}.R.sulc.32k_fs_LR.shape.gii'
         
         self.RV1=np.where(nib.load(self.Raparc).darrays[0].data==45)[0]
         self.RS1=np.where(nib.load(self.Raparc).darrays[0].data==46)[0]
