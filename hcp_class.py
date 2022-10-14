@@ -55,6 +55,7 @@ class hcp_subj:
         self.subj=subj
         
         clusterPath='/well/margulies/projects/data/hcpGrads'
+        anatNatPath=f'/well/win-hcp/HCP-YA/subjectsAll/{subj}/T1w/Native'
         anat32Path=f'/well/win-hcp/HCP-YA/subjectsAll/{subj}/T1w/fsaverage_LR32k'
         MNIpath=f'/well/win-hcp/HCP-YA/subjectsAll/{subj}/MNINonLinear/fsaverage_LR32k'
         
@@ -67,7 +68,7 @@ class hcp_subj:
         self.neighbours=neighbours
         
         self.Lsrf=f'{anat32Path}/{subj}.L.midthickness_MSMAll.32k_fs_LR.surf.gii'
-        self.LnatSrf=f'{clusterPath}/{subj}/T1w/Native/{subj}.L.midthickness.native.surf.gii'
+        self.LnatSrf=f'{anatNatPath}/{subj}.L.midthickness.native.surf.gii'
         self.Lcoords=nib.load(self.Lsrf).darrays[0].data
         self.Lfaces=nib.load(self.Lsrf).darrays[1].data
         
@@ -75,7 +76,7 @@ class hcp_subj:
         
         
         self.Rsrf=f'{anat32Path}/{subj}.R.midthickness_MSMAll.32k_fs_LR.surf.gii'
-        self.RnatSrf=f'{clusterPath}/{subj}/T1w/Native/{subj}.R.midthickness.native.surf.gii'
+        self.RnatSrf=f'{anatNatPath}/{subj}.R.midthickness.native.surf.gii'
         self.Rcoords=nib.load(self.Rsrf).darrays[0].data
         self.Rfaces=nib.load(self.Rsrf).darrays[1].data
 
