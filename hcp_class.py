@@ -67,6 +67,7 @@ class hcp_subj:
         self.neighbours=neighbours
         
         self.Lsrf=f'{anat32Path}/{subj}.L.midthickness_MSMAll.32k_fs_LR.surf.gii'
+        self.LnatSrf=f'{clusterPath}/{subj}/T1w/Native/{subj}.L.midthickness.native.surf.gii'
         self.Lcoords=nib.load(self.Lsrf).darrays[0].data
         self.Lfaces=nib.load(self.Lsrf).darrays[1].data
         
@@ -74,6 +75,7 @@ class hcp_subj:
         
         
         self.Rsrf=f'{anat32Path}/{subj}.R.midthickness_MSMAll.32k_fs_LR.surf.gii'
+        self.RnatSrf=f'{clusterPath}/{subj}/T1w/Native/{subj}.R.midthickness.native.surf.gii'
         self.Rcoords=nib.load(self.Rsrf).darrays[0].data
         self.Rfaces=nib.load(self.Rsrf).darrays[1].data
 
