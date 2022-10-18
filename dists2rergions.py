@@ -15,10 +15,10 @@ Rproi=np.load('2DistRois/RpRoi.npy')
 
 def deepS1(subjClass):
     Lsulc=nib.load(subjClass.Lsulc).darrays[0].data
-    Ltarg=subjClass.LS1[np.argmin(Lsulc[subjClass.LS1])]
+    Ltarg=subjClass.LS1 #[np.argmin(Lsulc[subjClass.LS1])]
     
     Rsulc=nib.load(subjClass.Rsulc).darrays[0].data
-    Rtarg=subjClass.RS1[np.argmin(Rsulc[subjClass.RS1])]
+    Rtarg=subjClass.RS1 #[np.argmin(Rsulc[subjClass.RS1])]
     return Ltarg,Rtarg
   
 inst=hcp_subj(subj,4)
