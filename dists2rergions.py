@@ -33,4 +33,4 @@ Rdist=surfdist.analysis.dist_calc(Rsurf,inst.Rfill,targets[1])
 Rfront=Rdist[RfROI]
 Rpost=Rdist[RpROI]
 
-np.save(f'2DistRois/{subj}.npy',np.asarray([Lfront.mean(),Lpost.mean(),Rfront.mean(),Rpost.mean()])
+np.save(f'2DistRois/{subj}.npy',np.asarray([Lfront.min(),Lpost.min(),Rfront.min(),Rpost.min()])
