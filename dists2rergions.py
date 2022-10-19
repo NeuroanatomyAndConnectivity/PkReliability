@@ -29,6 +29,10 @@ Lsurf=([inst.Lcoords,inst.Lfaces])
 Ldist=surfdist.analysis.dist_calc(Lsurf,inst.Lfill,targets[0])
 Lfront=Ldist[Lfroi]
 Lpost=Ldist[Lproi]
+Ldist1=surfdist.analysis.dist_calc(Lsurf,inst.Lfill,Lfroi)
+Ldist2=surfdist.analysis.dist_calc(Lsurf,inst.Lfill,Lproi)
+
+print(np.min(np.vstack([Ldist1,Ldist2]),axis=1).shape)
 
 Rsurf=([inst.Rcoords,inst.Rfaces])
 Rdist=surfdist.analysis.dist_calc(Rsurf,inst.Rfill,targets[1])
