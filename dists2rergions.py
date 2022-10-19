@@ -26,12 +26,12 @@ inst=hcp_subj(subj,4)
 targets=deepS1(inst)
 Lsurf=([inst.Lcoords,inst.Lfaces])
 Ldist=surfdist.analysis.dist_calc(Lsurf,inst.Lfill,targets[0])
-Lfront=Ldist[LfROI]
-Lpost=Ldist[LpROI]
+Lfront=Ldist[Lfroi]
+Lpost=Ldist[Lproi]
 
 Rsurf=([inst.Rcoords,inst.Rfaces])
 Rdist=surfdist.analysis.dist_calc(Rsurf,inst.Rfill,targets[1])
-Rfront=Rdist[RfROI]
-Rpost=Rdist[RpROI]
+Rfront=Rdist[Rfroi]
+Rpost=Rdist[Rproi]
 
 np.save(f'2DistRois/{subj}.npy',np.asarray([Lfront.mean(),Lpost.mean(),Rfront.mean(),Rpost.mean()]))
