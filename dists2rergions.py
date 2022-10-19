@@ -42,4 +42,4 @@ Rdist1=surfdist.analysis.dist_calc(Rsurf,inst.Rfill,Rfroi)
 Rdist2=surfdist.analysis.dist_calc(Rsurf,inst.Rfill,Rproi)
 RminPkdist=np.min(np.vstack([Rdist1,Rdist2]),axis=0)
 
-np.save(f'2DistRois/{subj}.npy',np.asarray([Lfront.min(),Lpost.min(),Rfront.min(),Rpost.min(),LminPkdist,RminPkdist]),dtype=object)
+np.save(f'2DistRois/{subj}.npy',np.asarray([Lfront.min(),Lpost.min(),Rfront.min(),Rpost.min(),LminPkdist,RminPkdist],dtype=object))
