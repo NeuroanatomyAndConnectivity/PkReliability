@@ -31,12 +31,15 @@ Lfront=Ldist[Lfroi]
 Lpost=Ldist[Lproi]
 Ldist1=surfdist.analysis.dist_calc(Lsurf,inst.Lfill,Lfroi)
 Ldist2=surfdist.analysis.dist_calc(Lsurf,inst.Lfill,Lproi)
-
-print(np.min(np.vstack([Ldist1,Ldist2]),axis=1).shape)
+LminPkdist=np.min(np.vstack([Ldist1,Ldist2]),axis=0)
 
 Rsurf=([inst.Rcoords,inst.Rfaces])
 Rdist=surfdist.analysis.dist_calc(Rsurf,inst.Rfill,targets[1])
 Rfront=Rdist[Rfroi]
 Rpost=Rdist[Rproi]
 
-np.save(f'2DistRois/{subj}.npy',np.asarray([Lfront.min(),Lpost.min(),Rfront.min(),Rpost.min()]))
+Rdist1=surfdist.analysis.dist_calc(Rsurf,inst.Rfill,Rfroi)
+Rdist2=surfdist.analysis.dist_calc(Rsurf,inst.Rfill,Rproi)
+RminPkdist=np.min(np.vstack([Rdist1,Rdist2]),axis=0)
+
+np.save(f'2DistRois/{subj}.npy',np.asarray([Lfront.min(),Lpost.min(),Rfront.min(),Rpost.min(),LminPkdist,RminPkdist]))
