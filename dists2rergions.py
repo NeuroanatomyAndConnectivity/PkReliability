@@ -3,6 +3,7 @@ import surfdist.analysis
 import nibabel as nib
 from nilearn.plotting import view_surf
 import numpy as np
+import sys
 
 subj=sys.argv[1]
 print(f'calculating distance from gradient mask to  parcels for subject {subj}')
