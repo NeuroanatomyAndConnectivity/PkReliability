@@ -14,17 +14,48 @@ Lproi=np.load('2DistRois/LpRoi.npy')
 Rfroi=np.load('2DistRois/RfRoi.npy')
 Rproi=np.load('2DistRois/RpRoi.npy')
 
-def deepS1(subjClass):
-    Lsulc=nib.load(subjClass.Lsulc).darrays[0].data
-    Ltarg=subjClass.LS1 #[np.argmin(Lsulc[subjClass.LS1])]
-    print(f'left target is S1 with shape {Ltarg.shape}')
-    Rsulc=nib.load(subjClass.Rsulc).darrays[0].data
-    Rtarg=subjClass.RS1 #[np.argmin(Rsulc[subjClass.RS1])]
-    print(f'right target is S1 with shape {Rtarg.shape}')
+#### get's the nearest neighbours of each vertex in a label
+def get_labelNN(coords,faces,vertices):
+    mini_dict={}
+    for i in vertices:
+        a=np.unique(faces[np.where(faces==i)[0]])
+        a=a[a!=i]
+        mini_dict[i]=a
+    return mini_dict 
+#### takes the vertices associated with two labels and returns the shared border between the two 
+def borders_betweenLabels(subj,hemi,label1verts,label2verts):
+    if hemi =='L':
+        coords=subj.Lcoords
+        faces=subj.Lfaces
+        l1=get_labelNN(coords,faces,label1verts)
+        l1=np.unique(list(l1.values()))
+        l2=get_labelNN(coords,faces,label2verts)
+        l2=np.unique(list(l2.values()))
+        return np.intersect1d(l1,l2)
+    elif hemi =='R':
+        coords=subj.Rcoords
+        faces=subj.Rfaces
+        l1=get_labelNN(coords,faces,label1verts)
+        l1=np.unique(list(l1.values()))
+        l2=get_labelNN(coords,faces,label2verts)
+        l2=np.unique(list(l2.values()))
+        return np.intersect1d(l1,l2)
+        
+
+def borderROI(subjClass):
+    LpostCent=np.where(nib.load(subjClass.Laparc).darrays[0].data==28)[0]
+    Lcentral=subjClass.LS1 
+    Ltarg=borders_betweenLabels(subjClass,'L',Lcentral,LpostCent)
+    print(f'left target is the border of the central sulcus and the post central gyrus with shape {Ltarg.shape}')
+    #### do the right hemisphere now 
+    RpostCent=np.where(nib.load(subjClass.Raparc).darrays[0].data==28)[0]
+    Rcentral=subjClass.RS1 
+    Rtarg=borders_betweenLabels(subjClass,'R',Lcentral,LpostCent)
+    print(f'right target is the border of the central sulcus and the post central gyrus with shape {Rtarg.shape}')
     return Ltarg,Rtarg
   
 inst=hcp_subj(subj,4)
-targets=deepS1(inst)
+targets=borderROI(inst)
 Lsurf=([inst.Lcoords,inst.Lfaces])
 Ldist=surfdist.analysis.dist_calc(Lsurf,inst.Lfill,targets[0])
 Lfront=Ldist[Lfroi]
