@@ -50,7 +50,7 @@ def borderROI(subjClass):
     #### do the right hemisphere now 
     RpostCent=np.where(nib.load(subjClass.Raparc).darrays[0].data==28)[0]
     Rcentral=subjClass.RS1 
-    Rtarg=borders_betweenLabels(subjClass,'R',Lcentral,LpostCent)
+    Rtarg=borders_betweenLabels(subjClass,'R',Rcentral,RpostCent)
     print(f'right target is the border of the central sulcus and the post central gyrus with shape {Rtarg.shape}')
     return Ltarg,Rtarg
   
