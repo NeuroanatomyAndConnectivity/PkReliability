@@ -93,6 +93,9 @@ def getDist2borderRatio(subj,roi1,roi2,border,hemi):
 from pathlib import Path
 Lpath=Path(f'{out}/Left.real.npy')
 Rpath=Path(f'{out}/Right.real.npy')
+
+Lborder,Rborder=borderROI(subj)
+
 if Lpath.is_file():
     pass 
 else:
