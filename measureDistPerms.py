@@ -22,7 +22,7 @@ def get_spinsPickle(file):
         sp=pickle.load(f)
         return sp.spin_lh_,sp.spin_rh_
         
-Lspin,Rpsin=get_spinsPickle(spin)
+Lspin,Rspin=get_spinsPickle(spin)
 
 Lrois=[np.load('Dist2SensoryBorder/LfRoi.npy'),np.load('Dist2SensoryBorder/LpRoi.npy')]
 Rrois=[np.load('Dist2SensoryBorder/RfRoi.npy'),np.load('Dist2SensoryBorder/RpRoi.npy')]
