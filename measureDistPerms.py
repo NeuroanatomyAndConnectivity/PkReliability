@@ -116,7 +116,7 @@ for i in range(len(Lspin)):
 LspinDists=np.vstack(LspinDists)
 
 basename_spin=spin.split('/')[1].split('.pickle')[0]
-np.save(f'{out}/spinBatches/L.{basename_spin}')
+np.save(f'{out}/spinBatches/L.{basename_spin}',LspinDists)
 
 RspinDists=[]
 for i in range(len(Rspin)):
@@ -125,4 +125,4 @@ for i in range(len(Rspin)):
 RspinDists=np.vstack(RspinDists)
 
 basename_spin=spin.split('/')[1].split('.pickle')[0]
-np.save(f'{out}/spinBatches/R.{basename_spin}')
+np.save(f'{out}/spinBatches/R.{basename_spin}',RspinDists)
