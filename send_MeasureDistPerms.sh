@@ -19,6 +19,7 @@ SUBJECT=$(sed -n "${SLURM_ARRAY_TASK_ID}p" $SUBJECT_LIST)
 echo "permuting distance measures on spun surface for $SUBJECT"
 
 for i in `cat spinFiles.txt`;do 
+    echo python3 measureDistPerms.py $SUBJECT $i
     python3 measureDistPerms.py $SUBJECT $i
 done
 
