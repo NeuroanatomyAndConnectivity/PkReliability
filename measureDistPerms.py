@@ -68,6 +68,26 @@ def borderROI(subjClass):
     print(f'right target is the border of the central sulcus and the post central gyrus with shape {Rtarg.shape}')
     return Ltarg,Rtarg
 
+def getDist2borderRatio(subj,roi1,roi2,border,hemi):
+    """calculate the distance to a border region. first input is an instance of the hcp_subj class"""
+    
+    if hemi =='L':
+        verts=subj.Lcoords.astype('float64')
+        faces=subj.Lfaces.astype('int32')
+    elif hemi=='R':
+        verts=subj.Rcoords.astype('float64')
+        faces=subj.Rfaces.astype('int32')
+        
+    roi1=roi1.astype('int32')
+    roi2=roi2.astype('int32')
+    
+    border=border.astype('int32')
+    
+    dist1=gdist.compute_gdist(verts,faces,roi1,border)
+    dist2=gdist.compute_gdist(verts,faces,roi2,border)
+    
+    ratio=dist1/(dist1+dist2)
+    return ratio
 #### save the canonical measurements out
 
 from pathlib import Path
