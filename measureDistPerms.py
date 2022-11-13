@@ -88,6 +88,27 @@ def getDist2borderRatio(subj,roi1,roi2,border,hemi):
     
     ratio=dist1/(dist1+dist2)
     return ratio
+def gradDefROIs(subj):
+    L10,R10=subj.extract_topX(test.Lgrad,test.Rgrad,90)
+    
+    Lws=nib.load('/well/margulies/users/mnk884/PkReliability/watershed_templates/LWS.28.max.label.gii').darrays[0].data
+    Lfront=np.where(Lws==1)[0]
+    Lpar=np.where(Lws==2)[0]
+    
+    Lfront=np.intersect1d(Lfront,L10)
+    Lpar=np.intersect1d(Lpar,L10)
+    Lrois=[Lfront,Lpar]
+    
+    Rws=nib.load('/well/margulies/users/mnk884/PkReliability/watershed_templates/RWS.28.max.label.gii').darrays[0].data
+    Rfront=np.where(Rws==1)[0]
+    Rpar=np.where(Rws==2)[0]
+    
+    Rfront=np.intersect1d(Rfront,R10)
+    Rpar=np.intersect1d(Rpar,R10)
+    Rrois=[Rfront,Rpar]
+    return Lrois,Rrois
+    
+
 #### save the canonical measurements out
 
 from pathlib import Path
@@ -101,12 +122,20 @@ if Lpath.is_file():
 else:
     Lcanonical=getDist2borderRatio(subj,Lrois[0],Lrois[1],Lborder,'L')
     np.save(f'{out}/Left.real',Lcanonical)
+    
+    Lgr,Rgr=gradDefROIs(subj)
+    LGradDefined=getDist2borderRatio(subj,Lgr[0],Lgr[1],Lborder,'L')
+    np.save(f'{out}/Left.GradDefined',LGradDefined)
 
 if Rpath.is_file():
     pass
 else:
     Rcanonical=getDist2borderRatio(subj,Rrois[0],Rrois[1],Rborder,'R')
     np.save(f'{out}/Right.real',Rcanonical)
+    
+    Lgr,Rgr=gradDefROIs(subj)
+    RGradDefined=getDist2borderRatio(subj,Rgr[0],Rgr[1],Rborder,'R')
+    np.save(f'{out}/Right.GradDefined',RGradDefined)
 
 ##### do the permutation measures 
 LspinDists=[]
