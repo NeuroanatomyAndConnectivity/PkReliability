@@ -89,7 +89,7 @@ def getDist2borderRatio(subj,roi1,roi2,border,hemi):
     ratio=dist1/(dist1+dist2)
     return ratio
 def gradDefROIs(subj):
-    L10,R10=subj.extract_topX(test.Lgrad,test.Rgrad,90)
+    L10,R10=subj.extract_topX(subj.Lgrad,subj.Rgrad,90)
     
     Lws=nib.load('/well/margulies/users/mnk884/PkReliability/watershed_templates/LWS.28.max.label.gii').darrays[0].data
     Lfront=np.where(Lws==1)[0]
