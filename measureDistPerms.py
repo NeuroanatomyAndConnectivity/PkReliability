@@ -116,6 +116,7 @@ Lpath=Path(f'{out}/Left.real.npy')
 Rpath=Path(f'{out}/Right.real.npy')
 
 Lborder,Rborder=borderROI(subj)
+Lgr,Rgr=gradDefROIs(subj)
 
 if Lpath.is_file():
     pass 
@@ -123,7 +124,6 @@ else:
     Lcanonical=getDist2borderRatio(subj,Lrois[0],Lrois[1],Lborder,'L')
     np.save(f'{out}/Left.real',Lcanonical)
     
-    Lgr,Rgr=gradDefROIs(subj)
     LGradDefined=getDist2borderRatio(subj,Lgr[0],Lgr[1],Lborder,'L')
     np.save(f'{out}/Left.GradDefined',LGradDefined)
 
@@ -139,19 +139,27 @@ else:
 
 ##### do the permutation measures 
 LspinDists=[]
+LspinDistsGrDef=[]
 for i in range(len(Lspin)):
     sp=Lspin[i]
     LspinDists.append(getDist2borderRatio(subj,sp[Lrois[0]],sp[Lrois[1]],sp[Lborder],'L'))
+    LspinDistsGrDef.append(getDist2borderRatio(subj,sp[Lgr[0]],sp[Lgr[1]],sp[Lborder],'L'))
 LspinDists=np.vstack(LspinDists)
+LspinDistsGrDef=np.vstack(LspinDistsGrDef)
 
 basename_spin=spin.split('/')[1].split('.pickle')[0]
 np.save(f'{out}/spinBatches/L.{basename_spin}',LspinDists)
+np.save(f'{out}/spinBatches/L.{basename_spin}.gr',LspinDistsGrDef)
 
 RspinDists=[]
+RspinDistsGrDef=[]
 for i in range(len(Rspin)):
     sp=Rspin[i]
     RspinDists.append(getDist2borderRatio(subj,sp[Rrois[0]],sp[Rrois[1]],sp[Rborder],'R'))
+    RspinDistsGrDef.append(getDist2borderRatio(subj,sp[Rgr[0]],sp[Rgr[1]],sp[Rborder],'R'))
 RspinDists=np.vstack(RspinDists)
+RspinDistsGrDef=np.vstack(RspinDistsGrDef)
 
 basename_spin=spin.split('/')[1].split('.pickle')[0]
 np.save(f'{out}/spinBatches/R.{basename_spin}',RspinDists)
+np.save(f'{out}/spinBatches/R.{basename_spin}.gr',RspinDistsGrDef)
