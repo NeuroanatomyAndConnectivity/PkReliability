@@ -9,11 +9,18 @@ import sys
 import os
 
 subj=sys.argv[1]
+spin=sys.argv[2]
+
 out=f'Dist2SensoryBorder/{subj}/'
 os.makedirs(out,exist_ok=True)
 os.makedirs(f'{out}/spinBatches',exist_ok=True)
 
 subj=hcp_subj(subj,4)
+
+def get_spinsPickle(file):
+    with open(file,'rb') as f:
+        sp=pickle.load(f)
+        return sp.spin_lh_,sp.spin_rh_
 
 def gradDefROIs(subj):
     L10,R10=subj.extract_topX(subj.Lgrad,subj.Rgrad,90)
@@ -33,8 +40,21 @@ def gradDefROIs(subj):
     Rmpar=np.intersect1d(np.where(Rws==7)[0],R10)
     Rrois=[Rfront,Rpar,Rtmp,Rmpar]
     return Lrois,Rrois
-def rois2cort(subj):
+
+def rois2cort(subj,spin==False):
     L10,R10=gradDefROIs(subj)
+    if spin==False:
+        pass
+    else:
+        Lspin,Rspin=get_spinsPickle(spin)
+        for i in range(len(Lspin)):
+            sp=Lspin[i]
+            for j in range(len(L10)):
+                L10[j]=sp[L10[j]]
+        for i in range(len(Lspin)):
+            sp=Rspin[i]
+            for j in range(len(R10)):
+                R10[j]=sp[R10[j]]
     
     Lsrf=(subj.Lcoords,subj.Lfaces)
     Ldists=[]
@@ -52,5 +72,5 @@ def rois2cort(subj):
 ##### get the distances from each ROI 
 L,R=rois2cort(subj)
 
-np.save(L,f'{out}/L.Peaks2cort')
-np.save(R,f'{out}/R.Peaks2cort')
+np.save(L,f'{out}/L.Peaks2cort',spin=False)
+np.save(R,f'{out}/R.Peaks2cort',spin=False)
