@@ -14,6 +14,7 @@ import surfdist
 
 
 subj=sys.argv[1]
+print(f'running subject {subj}')
 out=f'Dist2SensoryBorder/{subj}/'
 os.makedirs(out,exist_ok=True)
 os.makedirs(f'{out}/spinBatches',exist_ok=True)
