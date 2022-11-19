@@ -1,4 +1,4 @@
-!#/usr/bin/env python
+#! /usr/bin/env python
 from hcp_class import hcp_subj
 import numpy as np
 import gdist
