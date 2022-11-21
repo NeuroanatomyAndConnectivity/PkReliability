@@ -13,12 +13,12 @@ source /well/margulies/users/mnk884/python/postHoc-permutations-skl/bin/activate
 #$ -cwd
 #$ -q short.qc
 #$ -pe shmem 1
-#$ -t 1-912
+#$ -t 1-2
 
 
 SUBJECT_LIST=./subjectsWithParietalPeak.txt
 
-params=$(sed -n "${SGE_TASK_ID}p" $SUBJECT_LIST)
+SUBJECT=$(sed -n "${SGE_TASK_ID}p" $SUBJECT_LIST)
 
 for i in `cat spinFiles.txt`;do 
     echo python3 peaks2cortex.py  $SUBJECT $i
