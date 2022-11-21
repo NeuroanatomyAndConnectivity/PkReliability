@@ -100,4 +100,4 @@ Lsp,Rsp=rois2cort(subj,spin=spinned)
 np.save(f'{out}/spinBatches/L.Peak2Cort.{basename_spin}',Lsp)
 np.save(f'{out}/spinBatches/R.Peak2Cort.{basename_spin}',Rsp)
 
-print('task failed succesfully')
+print('arrays have been saved. remember permutations are a 40x32K matrix. divide by 4 to get measurements for your 10 permutations per spin ')
