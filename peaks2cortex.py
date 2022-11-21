@@ -81,10 +81,18 @@ def rois2cort(subj,spin=False):
         Rdists=np.vstack(Rdists)
         return Ldists,Rdists
 
-print('measuring true value')
-L,R=rois2cort(subj)
-np.save(f'{out}/L.Peaks2cort',L)
-np.save(f'{out}/R.Peaks2cort',R)
+    
+from pathlib import Path
+Lpath=Path(f'{out}/L.Peaks2Cort.npy')
+Rpath=Path(f'{out}/R.Peaks2Cort.npy')
+if Lpath.is_file():
+    print('already measured the real case. only measure permutations now')
+    pass
+else:
+    print('measuring true value')
+    L,R=rois2cort(subj)
+    np.save(f'{out}/L.Peaks2Cort',L)
+    np.save(f'{out}/R.Peaks2Cort',R)
 
 
 print('measuring permuted values')
