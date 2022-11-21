@@ -13,7 +13,7 @@ source /well/margulies/users/mnk884/python/postHoc-permutations-skl/bin/activate
 #$ -cwd
 #$ -q short.qc
 #$ -pe shmem 1
-#$ -t 1-2
+#$ -t 1-912
 
 
 SUBJECT_LIST=./subjectsWithParietalPeak.txt
