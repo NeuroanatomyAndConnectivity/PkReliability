@@ -2,6 +2,9 @@
 from hcp_class import hcp_subj
 import numpy as np
 import gdist
+import surfdist.analysis
+import surfdist.utils
+import surfdist
 import nibabel as nib
 import pickle
 import sys
