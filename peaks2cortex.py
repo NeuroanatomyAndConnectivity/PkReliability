@@ -18,7 +18,7 @@ os.makedirs(f'{out}/spinBatches',exist_ok=True)
 subj=hcp_subj(subj,4)
 
 spinned=sys.argv[2]
-
+basename_spin=spinned.split('/')[1].split('.pickle')[0]
 
 def load_pickle(file):
     with open(file,'rb') as data:
@@ -65,7 +65,7 @@ def rois2cort(subj,spin=False):
                 d[np.where(np.isfinite(d)!=True)[0]]=0
                 Rrois.append(d)
             Rdists.append(np.vstack(Rrois))
-        return Ldists,Rdists
+        return np.vstack(Ldists),np.vstack(Rdists)
     
     else:
         
@@ -83,8 +83,13 @@ def rois2cort(subj,spin=False):
 
 print('measuring true value')
 L,R=rois2cort(subj)
+np.save(f'{out}/L.Peaks2cort',L)
+np.save(f'{out}/R.Peaks2cort',R)
+
 
 print('measuring permuted values')
-L,R=rois2cort(subj,spin=spinned)
+Lsp,Rsp=rois2cort(subj,spin=spinned)
+np.save(f'{out}/spinBatches/L.Peak2Cort.{basename_spin}',Lsp)
+np.save(f'{out}/spinBatches/R.Peak2Cort.{basename_spin}',Rsp)
 
 print('task failed succesfully')
