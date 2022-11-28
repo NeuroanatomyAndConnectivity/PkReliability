@@ -40,6 +40,16 @@ def gradDefROIs(subj):
     Rrois=[Rfront,Rpar,Rtmp,Rmpar]
     return Lrois,Rrois
 
+def top10tocort(subj):
+    Lsrf=(subj.Lcoords,subj.Lfaces)
+    Rsrf=(subj.Rcoords,subj.Rfaces)
+    L10,R10=subj.extract_topX(subj.Lgrad,subj.Rgrad,90)
+    dL=surfdist.analysis.dist_calc(Lsrf,subj.Lfill,L10)
+    dR=surfdist.analysis.dist_calc(Rsrf,subj.Rfill,R10)
+    return dL,dR
+    
+    
+
 def rois2cort(subj,spin=False):
     Lsrf=(subj.Lcoords,subj.Lfaces)
     Rsrf=(subj.Rcoords,subj.Rfaces)
@@ -93,11 +103,18 @@ else:
     L,R=rois2cort(subj)
     np.save(f'{out}/L.Peaks2Cort',L)
     np.save(f'{out}/R.Peaks2Cort',R)
+    
+    Ltop,Rtop=top10tocort(subj)
+    np.save(f'{out}/L.top10toCort',Ltop)
+    np.save(f'{out}/R.top10t0Cort',Rtop)
+    
+    
+    
 
 
-print('measuring permuted values')
-Lsp,Rsp=rois2cort(subj,spin=spinned)
-np.save(f'{out}/spinBatches/L.Peak2Cort.{basename_spin}',Lsp)
-np.save(f'{out}/spinBatches/R.Peak2Cort.{basename_spin}',Rsp)
+# print('measuring permuted values')
+# Lsp,Rsp=rois2cort(subj,spin=spinned)
+# np.save(f'{out}/spinBatches/L.Peak2Cort.{basename_spin}',Lsp)
+# np.save(f'{out}/spinBatches/R.Peak2Cort.{basename_spin}',Rsp)
 
 print('arrays have been saved. remember permutations are a 40x32K matrix. divide by 4 to get measurements for your 10 permutations per spin ')
