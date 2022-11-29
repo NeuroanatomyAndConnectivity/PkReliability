@@ -101,8 +101,8 @@ def runWS(subject):
     inst=hcp_subj(subj_str,4)
     
     
-    Ldist=np.round(np.load(f'Dist2SensoryBorder/{subj_str}/L.top10toCort.npy'))
-    Rdist=np.round(np.load(f'Dist2SensoryBorder/{subj_str}/R.top10t0Cort.npy'))
+    Ldist=np.round(np.load(f'/well/margulies/projects/pkReliability/Dist2SensoryBorder/{subj_str}/L.top10toCort.npy'))
+    Rdist=np.round(np.load(f'/well/margulies/projects/pkReliability/Dist2SensoryBorder/{subj_str}/R.top10t0Cort.npy'))
     
     keys=['Common','MaxEq','MinEq','MedEq']
     
@@ -117,14 +117,14 @@ def runWS(subject):
         R=dict(zip(keys,R)) 
         print(R)
     
-        outpath=f'GeoDesicCiftis/{subject}'
+        outpath=f'tmp/'
         sp.run(f'mkdir -p {outpath}',shell=True)
         
-        WS_outPath=f'Dist2SensoryBorder/{inst.subj}/WS_seg'
+        WS_outPath=f'/well/margulies/projects/pkReliability/Dist2SensoryBorder/{inst.subj}/WS_seg'
         sp.run(f'mkdir -p {WS_outPath}',shell=True)
         
         for key in L:
-            cifti_out=f'GeoDesicCiftis/{subject}/{key}.L.0{int(L[key])}.dconn.nii'
+            cifti_out=f'tmp/{key}.L.0{int(L[key])}.dconn.nii'
             cmd=f'wb_command -surface-geodesic-distance-all-to-all {inst.Lsrf} {cifti_out} -limit {L[key]}'
             sp.run(cmd,shell=True)
             
@@ -135,7 +135,7 @@ def runWS(subject):
             WS=cortiGradWS(grad,dist,1,'max')
             del dist
             
-            cmd=f'rm {inst.Lsrf} {cifti_out}'
+            cmd=f'rm  {cifti_out}'
             sp.run(cmd,shell=True)
             
             out=np.zeros(32492)
@@ -143,7 +143,7 @@ def runWS(subject):
             save_gifti(out,f'{WS_outPath}/L.{key}.0{int(L[key])}')
             
         for key in R:
-            cifti_out=f'GeoDesicCiftis/{subject}/{key}.R.0{int(R[key])}.dconn.nii'
+            cifti_out=f'tmp/{key}.R.0{int(R[key])}.dconn.nii'
             cmd=f'wb_command -surface-geodesic-distance-all-to-all {inst.Rsrf} {cifti_out} -limit {R[key]}'
             sp.run(cmd,shell=True)
             
@@ -153,8 +153,10 @@ def runWS(subject):
             
             WS=cortiGradWS(grad,dist,1,'max')
             del dist
-            cmd=f'rm {inst.Lsrf} {cifti_out}'
+            cmd=f'rm  {cifti_out}'
             sp.run(cmd,shell=True)
+            
+            sp.run('rm -rf tmp/',shell=True)
             
             out=np.zeros(32492)
             out[inst.Rfill]=WS
