@@ -135,6 +135,9 @@ def runWS(subject):
             WS=cortiGradWS(grad,dist,1,'max')
             del dist
             
+            cmd=f'rm {inst.Lsrf} {cifti_out}'
+            sp.run(cmd,shell=True)
+            
             out=np.zeros(32492)
             out[inst.Lfill]=WS
             save_gifti(out,f'{WS_outPath}/L.{key}.0{int(L[key])}')
@@ -150,6 +153,8 @@ def runWS(subject):
             
             WS=cortiGradWS(grad,dist,1,'max')
             del dist
+            cmd=f'rm {inst.Lsrf} {cifti_out}'
+            sp.run(cmd,shell=True)
             
             out=np.zeros(32492)
             out[inst.Rfill]=WS
