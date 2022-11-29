@@ -12,7 +12,7 @@ source /well/margulies/users/mnk884/python/postHoc-permutations-skl/bin/activate
 #$ -j y
 #$ -cwd
 #$ -q short.qc
-#$ -pe shmem 1
+#$ -pe shmem 3
 #$ -t 1-912
 
 
