@@ -117,14 +117,14 @@ def runWS(subject):
         R=dict(zip(keys,R)) 
         print(R)
     
-        outpath=f'tmp/'
+        outpath=f'tmp.{inst.subj}/'
         sp.run(f'mkdir -p {outpath}',shell=True)
         
         WS_outPath=f'/well/margulies/projects/pkReliability/Dist2SensoryBorder/{inst.subj}/WS_seg'
         sp.run(f'mkdir -p {WS_outPath}',shell=True)
         
         for key in L:
-            cifti_out=f'tmp/{key}.L.0{int(L[key])}.dconn.nii'
+            cifti_out=f'{outpath}/{key}.L.0{int(L[key])}.dconn.nii'
             cmd=f'wb_command -surface-geodesic-distance-all-to-all {inst.Lsrf} {cifti_out} -limit {L[key]}'
             sp.run(cmd,shell=True)
             
@@ -143,7 +143,7 @@ def runWS(subject):
             save_gifti(out,f'{WS_outPath}/L.{key}.0{int(L[key])}')
             
         for key in R:
-            cifti_out=f'tmp/{key}.R.0{int(R[key])}.dconn.nii'
+            cifti_out=f'{outpath}/{key}.R.0{int(R[key])}.dconn.nii'
             cmd=f'wb_command -surface-geodesic-distance-all-to-all {inst.Rsrf} {cifti_out} -limit {R[key]}'
             sp.run(cmd,shell=True)
             
@@ -156,7 +156,7 @@ def runWS(subject):
             cmd=f'rm  {cifti_out}'
             sp.run(cmd,shell=True)
             
-            sp.run('rm -rf tmp/',shell=True)
+            sp.run(f'rm -rf {outpath}',shell=True)
             
             out=np.zeros(32492)
             out[inst.Rfill]=WS
