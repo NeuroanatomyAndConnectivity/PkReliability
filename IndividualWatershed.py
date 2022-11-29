@@ -12,7 +12,7 @@ from utils import save_gifti
 from nilearn.plotting import view_surf
 from statistics import mode
 
-subj=sys.argv[1]
+SubjectIn=sys.argv[1]
 
 ##### this is the watershed function we call 
 def cortiGradWS(W,D,m,method):
@@ -96,11 +96,13 @@ def SensVals(subj,distArr,hemi):
         return common,highest,lowest,np.round(med)
 
 def runWS(subject):
-    inst=hcp_subj(subject,4)
+    
+    subj_str=subject
+    inst=hcp_subj(subj_str,4)
     
     
-    Ldist=np.round(np.load(f'Dist2SensoryBorder/{subject}/L.top10toCort.npy'))
-    Rdist=np.round(np.load(f'Dist2SensoryBorder/{subject}/R.top10t0Cort.npy'))
+    Ldist=np.round(np.load(f'Dist2SensoryBorder/{subj_str}/L.top10toCort.npy'))
+    Rdist=np.round(np.load(f'Dist2SensoryBorder/{subj_str}/R.top10t0Cort.npy'))
     
     keys=['Common','MaxEq','MinEq','MedEq']
     
@@ -154,5 +156,5 @@ def runWS(subject):
             save_gifti(out,f'{WS_outPath}/R.{key}.0{int(R[key])}')
 
 
-runWS('subj')
+runWS(SubjectIn)
   
