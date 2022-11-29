@@ -6,7 +6,7 @@ source /well/margulies/users/mnk884/python/postHoc-permutations-skl/bin/activate
 
 
 ### job parameters
-#$ -N Permute
+#$ -N Watershed
 #$ -o logs/
 #$ -e logs/
 #$ -j y
