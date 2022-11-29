@@ -4,7 +4,7 @@
 #SBATCH -o ./logs/Watershed-%j.out
 #SBATCH -p short
 #SBATCH --constraint="skl-compat"
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=3
 #SBATCH --array=1-912%10
 #SBATCH --requeue
 SUBJECT_LIST=./subjectsWithParietalPeak.txt
