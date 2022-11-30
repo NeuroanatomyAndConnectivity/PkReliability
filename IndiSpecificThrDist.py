@@ -82,7 +82,6 @@ def TopToCort(subj):
     dR=surfdist.analysis.dist_calc(Rsrf,subj.Rfill,R10)
     return dL,dR
     
-
-    Ltop,Rtop=TopToCort(subj)
-    np.save(f'{out}/L.topIndiThr',Ltop)
-    np.save(f'{out}/R.topIndiThr',Rtop)
+Ltop,Rtop=TopToCort(subj)
+np.save(f'{out}/L.topIndiThr',Ltop)
+np.save(f'{out}/R.topIndiThr',Rtop)
