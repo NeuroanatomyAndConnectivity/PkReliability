@@ -59,7 +59,7 @@ def optimThresh(ID):
     R=[]
     thrs=list(range(60,99))
     for i in thrs:
-        g=subj.subj.extract_topX(subj.Lgrad,subj.Rgrad,i)
+        g=subj.extract_topX(subj.Lgrad,subj.Rgrad,i)
         L.append(checkPresence(g,'L'))
         R.append(checkPresence(g,'R'))
     LRsum=np.sum(np.vstack([L,R]),axis=0)
