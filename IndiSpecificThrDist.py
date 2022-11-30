@@ -15,7 +15,7 @@ out=f'/well/margulies/projects/pkReliability/Dist2SensoryBorder/{subj}/'
 os.makedirs(out,exist_ok=True)
 
 subj=hcp_subj(subj,4)
-    
+print(subj.subj)    
 
 def checkPresence(thrGrad,hemi):
     
