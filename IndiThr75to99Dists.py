@@ -21,10 +21,6 @@ print(subj.subj)
 def MultiThr70to99(subj):
     Lsrf=(subj.Lcoords,subj.Lfaces)
     Rsrf=(subj.Rcoords,subj.Rfaces)
-
-    thr=optimThresh(subj.subj)
-    print(f'optimal threshold for {subj.subj} is {thr}')
-    
     dL=[]
     dR=[]
     for thr in range(70,99):
