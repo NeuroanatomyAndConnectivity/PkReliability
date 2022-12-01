@@ -33,6 +33,6 @@ def MultiThr70to99(subj):
       dR.append(surfdist.analysis.dist_calc(Rsrf,subj.Rfill,R10))
     return np.vstack(dL),np.vstack(dR)
     
-Ltop,Rtop=TopToCort(subj)
+Ltop,Rtop=MultiThr70to99(subj)
 np.save(f'{out}/L.70to99Thr',Ltop)
 np.save(f'{out}/R.70to99Thr',Rtop)
