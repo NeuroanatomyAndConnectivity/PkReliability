@@ -23,7 +23,7 @@ def MultiThr70to99(subj):
     Rsrf=(subj.Rcoords,subj.Rfaces)
     dL=[]
     dR=[]
-    for thr in range(70,99):
+    for thr in range(70,100):
       L10,R10=subj.extract_topX(subj.Lgrad,subj.Rgrad,thr)
       dL.append(surfdist.analysis.dist_calc(Lsrf,subj.Lfill,L10))
       dR.append(surfdist.analysis.dist_calc(Rsrf,subj.Rfill,R10))
