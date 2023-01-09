@@ -235,8 +235,8 @@ abl_dmn_L.to_csv(f'{outpath}/{subj.subj}.L.ablation.DMN.Distances.csv',index=Fal
 
 
 ### linear regress
-l1=influence2Sens(subj,abl,'L')
-l2=influence2Sens(subj,abl_dmn_R,'L')
+l1=influence2Sens(subj,abl_L,'L')
+l2=influence2Sens(subj,abl_dmn_L,'L')
 
 ### save output 
 l1.to_csv(f'{outpath}/{subj.subj}.L.ablation.csv',index=False,sep=',')
@@ -254,7 +254,7 @@ abl_dmn_R.to_csv(f'{outpath}/{subj.subj}.R.ablation.DMN.Distances.csv',index=Fal
 
 
 ### linear regress
-r1=influence2Sens(subj,abl,'R')
+r1=influence2Sens(subj,abl_R,'R')
 r2=influence2Sens(subj,abl_dmn_R,'R')
 
 r1.to_csv(f'{outpath}/{subj.subj}.R.ablation.csv',index=False,sep=',')
