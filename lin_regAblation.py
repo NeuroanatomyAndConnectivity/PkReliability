@@ -227,14 +227,6 @@ def influence2Sens(subj,data_dict,hemi):
 ### measure distance
 abl_L,abl_dmn_L=ablateGradient(subj,90,'L')
 
-abl_L=pd.DataFrame.from_dict(abl_L)
-abl_L.to_csv(f'{outpath}/{subj.subj}.L.ablation.Distances.csv',index=False,sep=',')
-abl_dmn_L=pd.DataFrame.from_dict(abl_dmn_L)
-abl_dmn_L.to_csv(f'{outpath}/{subj.subj}.L.ablation.DMN.Distances.csv',index=False,sep=',')
-
-
-
-### linear regress
 l1=influence2Sens(subj,abl_L,'L')
 l2=influence2Sens(subj,abl_dmn_L,'L')
 
@@ -243,15 +235,19 @@ l1.to_csv(f'{outpath}/{subj.subj}.L.ablation.csv',index=False,sep=',')
 l2.to_csv(f'{outpath}/{subj.subj}.L.ablation.DMN.csv',index=False,sep=',')
 
 
+abl_L=pd.DataFrame.from_dict(abl_L)
+abl_L.to_csv(f'{outpath}/{subj.subj}.L.ablation.Distances.csv',index=False,sep=',')
+abl_dmn_L=pd.DataFrame.from_dict(abl_dmn_L)
+abl_dmn_L.to_csv(f'{outpath}/{subj.subj}.L.ablation.DMN.Distances.csv',index=False,sep=',')
+
+
+
+### linear regress
+
+
 ## do the right 
 ### measure dist
 abl_R,abl_dmn_R=ablateGradient(subj,90,'R')
-
-abl_R=pd.DataFrame.from_dict(abl_R)
-abl_R.to_csv(f'{outpath}/{subj.subj}.R.ablation.Distances.csv',index=False,sep=',')
-abl_dmn_R=pd.DataFrame.from_dict(abl_dmn_R)
-abl_dmn_R.to_csv(f'{outpath}/{subj.subj}.R.ablation.DMN.Distances.csv',index=False,sep=',')
-
 
 ### linear regress
 r1=influence2Sens(subj,abl_R,'R')
@@ -259,6 +255,14 @@ r2=influence2Sens(subj,abl_dmn_R,'R')
 
 r1.to_csv(f'{outpath}/{subj.subj}.R.ablation.csv',index=False,sep=',')
 r2.to_csv(f'{outpath}/{subj.subj}.R.ablation.DMN.csv',index=False,sep=',')
+
+
+abl_R=pd.DataFrame.from_dict(abl_R)
+abl_R.to_csv(f'{outpath}/{subj.subj}.R.ablation.Distances.csv',index=False,sep=',')
+abl_dmn_R=pd.DataFrame.from_dict(abl_dmn_R)
+abl_dmn_R.to_csv(f'{outpath}/{subj.subj}.R.ablation.DMN.Distances.csv',index=False,sep=',')
+
+
 
 
 
