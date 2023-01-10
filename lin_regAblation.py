@@ -103,7 +103,8 @@ def ablateGradient(subj,thr,hemi):
                 
         
     elif hemi =='R':
-        WS=nib.load('watershed_templates/RWS.28.max.label.gii').darrays[0].data
+#         WS=nib.load('watershed_templates/RWS.28.max.label.gii').darrays[0].data
+        WS=nib.load('watershed_templates/LWS.28.max.label.gii').darrays[0].data
         grad=grad[1]
 ##### remove anything left in occipital pole peak from gradient
         OP=np.where(WS==9)[0]
