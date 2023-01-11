@@ -79,24 +79,30 @@ def ablateGradient(subj,thr,hemi):
         #### do the ablation 
         ablation={}
         ablation['groundTruth']=gt
-        
+        ZoneDist={}
         for key in zones:
             val=zones[key]
             ablate=np.where(WS==val)[0]
             if val !=9:
                 roi=L10[~np.isin(L10,ablate)]
                 ablation[key]=analysis.dist_calc(Lsrf,subj.Lfill,roi)
+
+                peak=fullDMN_REP[np.isin(fullDMN_REP,ablate)]
+                ZoneDist[key]=analysis.dist_calc(Lsrf,subj.Lfill,peak)
         ablation['thrInclMedtmp']=all(gt==gt_dmn)
         
         ablation_DMN={}
         ablation_DMN['groundTruth']=gt_dmn
-        
+        ZoneDist={}
         for key in zones:
             val=zones[key]
             ablate=np.where(WS==val)[0]
             if val !=9:
                 roi=fullDMN_REP[~np.isin(fullDMN_REP,ablate)]
                 ablation_DMN[key]=analysis.dist_calc(Lsrf,subj.Lfill,roi)
+
+                peak=fullDMN_REP[np.isin(fullDMN_REP,ablate)]
+                ZoneDist[key]=analysis.dist_calc(Lsrf,subj.Lfill,peak)
         ablation_DMN['thrInclMedtmp']=all(gt==gt_dmn)
         
         
@@ -134,17 +140,24 @@ def ablateGradient(subj,thr,hemi):
         #### do the ablation 
         ablation={}
         ablation['groundTruth']=gt
-        
+        ZoneDist={}
+
+
         for key in zones:
             val=zones[key]
             ablate=np.where(WS==val)[0]
             if val !=9:
                 roi=R10[~np.isin(R10,ablate)]
                 ablation[key]=analysis.dist_calc(Rsrf,subj.Rfill,roi)
+
+                peak=R10[np.isin(R10,ablate)]
+                ZoneDist[key]=analysis.dist_calc(Rsrf,subj.Rfill,peak)
+
         ablation['thrInclMedtmp']=all(gt==gt_dmn)
         
         ablation_DMN={}
         ablation_DMN['groundTruth']=gt_dmn
+        ZoneDist={}
         
         for key in zones:
             val=zones[key]
@@ -152,10 +165,12 @@ def ablateGradient(subj,thr,hemi):
             if val !=9:
                 roi=fullDMN_REP[~np.isin(fullDMN_REP,ablate)]
                 ablation_DMN[key]=analysis.dist_calc(Rsrf,subj.Rfill,roi)
+                peak=fullDMN_REP[np.isin(fullDMN_REP,ablate)]
+                ZoneDist[key]=analysis.dist_calc(Rsrf,subj.Rfill,peak)
         
         ablation_DMN['thrInclMedtmp']=all(gt==gt_dmn)
                 
-    return ablation,ablation_DMN
+    return ablation,ablation_DMN,ZoneDist
 
 def getSensory(label):
     data=nib.load(label).darrays[0].data 
@@ -226,7 +241,7 @@ def influence2Sens(subj,data_dict,hemi):
         
 ### do the left
 ### measure distance
-abl_L,abl_dmn_L=ablateGradient(subj,90,'L')
+abl_L,abl_dmn_L,ZdistsL=ablateGradient(subj,90,'L')
 
 l1=influence2Sens(subj,abl_L,'L')
 l2=influence2Sens(subj,abl_dmn_L,'L')
@@ -240,7 +255,8 @@ abl_L=pd.DataFrame.from_dict(abl_L)
 abl_L.to_csv(f'{outpath}/{subj.subj}.L.ablation.Distances.csv',sep=',')
 abl_dmn_L=pd.DataFrame.from_dict(abl_dmn_L)
 abl_dmn_L.to_csv(f'{outpath}/{subj.subj}.L.ablation.DMN.Distances.csv',sep=',')
-
+ZdistsL=pd.DataFrame.from_dict(ZdistsL)
+ZdistsL.to_csv(f'{outpath}/{subj.subj}.L.ZoneDists.csv',sep=',')
 
 
 ### linear regress
@@ -248,7 +264,7 @@ abl_dmn_L.to_csv(f'{outpath}/{subj.subj}.L.ablation.DMN.Distances.csv',sep=',')
 
 ## do the right 
 ### measure dist
-abl_R,abl_dmn_R=ablateGradient(subj,90,'R')
+abl_R,abl_dmn_R,ZdistsR=ablateGradient(subj,90,'R')
 
 ### linear regress
 r1=influence2Sens(subj,abl_R,'R')
@@ -263,7 +279,6 @@ abl_R.to_csv(f'{outpath}/{subj.subj}.R.ablation.Distances.csv',sep=',')
 abl_dmn_R=pd.DataFrame.from_dict(abl_dmn_R)
 abl_dmn_R.to_csv(f'{outpath}/{subj.subj}.R.ablation.DMN.Distances.csv',sep=',')
 
-
-
-
+ZdistsR=pd.DataFrame.from_dict(ZdistsR)
+ZdistsR.to_csv(f'{outpath}/{subj.subj}.R.ZoneDists.csv',sep=',')
 
